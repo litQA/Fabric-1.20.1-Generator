@@ -1,0 +1,30 @@
+defaultvalue: Blocks.AIR.defaultBlockState()
+scopes:
+  local:
+    init: ${var.getType().getJavaType(generator.getWorkspace())} ${var.getName()} = ${var.getType().getDefaultValue(generator.getWorkspace())};
+    get: /*@BlockState*/${name}
+    set: <#include "mcitems.ftl"> ${name} = ${mappedBlockToBlockStateCode(value)};
+  global_session:
+    init: public static BlockState ${var.getName()} = ${generator.map(var.getValue(), "blocksitems")}.defaultBlockState();
+    get: /*@BlockState*/${JavaModName}Variables.${name}
+    set: <#include "mcitems.ftl"> ${JavaModName}Variables.${name} = ${mappedBlockToBlockStateCode(value)};
+  player_lifetime:
+    init: public BlockState ${var.getName()} = ${generator.map(var.getValue(), "blocksitems")}.defaultBlockState();
+    read: ${var.getName()} = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("${var.getName()}"));
+    write: nbt.put("${var.getName()}", NbtUtils.writeBlockState(${var.getName()}));
+    get: ${JavaModName}Variables.getPlayerLifetimeVars(${entity}).${name}
+    set: |
+      <#include "mcitems.ftl">
+      <@head>{var _vars = ${JavaModName}Variables.getPlayerLifetimeVars(${entity});</@head>
+      _vars.${name} = ${mappedBlockToBlockStateCode(value)};
+      <@tail>${JavaModName}Variables.syncPlayerVars(${entity});}</@tail>
+  player_persistent:
+    init: public BlockState ${var.getName()} = ${generator.map(var.getValue(), "blocksitems")}.defaultBlockState();
+    read: ${var.getName()} = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("${var.getName()}"));
+    write: nbt.put("${var.getName()}", NbtUtils.writeBlockState(${var.getName()}));
+    get: ${JavaModName}Variables.getPlayerVars(${entity}).${name}
+    set: |
+      <#include "mcitems.ftl">
+      <@head>{var _vars = ${JavaModName}Variables.getPlayerVars(${entity});</@head>
+      _vars.${name} = ${mappedBlockToBlockStateCode(value)};
+      <@tail>${JavaModName}Variables.syncPlayerVars(${entity});}</@tail>

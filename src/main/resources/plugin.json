@@ -1,0 +1,13 @@
+{
+  "id": "generator-fabric-${version}",
+  "supportedversions": [
+    202600233518
+  ],
+  "info": {
+    "name": "Minecraft Fabric ${version} Generator",
+    "version": "${pluginVersion}",
+    "description": "A Fabric generator for Minecraft 1.20.1",
+    "author": "LitQA",
+    "credits": "Goldorion"
+  }
+}

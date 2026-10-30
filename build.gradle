@@ -1,0 +1,92 @@
+import java.nio.file.Files
+
+plugins {
+    id "java"
+}
+
+// MCreator 2026.2 is built and shipped with Java 25, so the plugin build is aligned with it
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
+tasks.processResources {
+    filesMatching('plugin.json') {
+        expand(
+                version: project.version,
+                pluginVersion: project.pluginVersion
+        )
+    }
+}
+
+tasks.jar {
+    archiveFileName.set(Globals.getArchiveName())
+}
+
+class Globals {
+    private static final def ARCHIVE_NAME = "generator-fabric-1.20.1" // The name of the exported file
+
+    // You can change the root folder of your OS if you have a custom installation
+    public static final def MCREATOR_ROOT_FOLDER_WINDOWS = "C:/Program Files/Pylo/MCreator"
+    public static final def MCREATOR_ROOT_FOLDER_MAC_LINUX = "/Applications/MCreator.app/Contents/MacOS/mcreator"
+
+    static def getArchiveName() {
+        return ARCHIVE_NAME + ".zip"
+    }
+
+    static String getOSName() {
+        return System.getProperty("os.name").toLowerCase()
+    }
+
+    static String getUserHome() {
+        return System.getProperty("user.home") // user.name is the name of the pc, not the name of the directory
+    }
+}
+
+// workaround for IDEA-265203
+System.setProperty("user.dir", projectDir.toString())
+
+// MCreator only unpacks the plugin archive, so a plain zip (jar format) of src/main/resources is enough
+tasks.register('exportPlugin', Copy) {
+    group("mcreator_plugins")
+    dependsOn(tasks.named('jar'))
+
+    from(tasks.named('jar').flatMap { it.archiveFile })
+    into(layout.buildDirectory)
+}
+
+tasks.register('install') {
+    dependsOn exportPlugin
+    group("mcreator_plugins")
+    doLast {
+        println("Installing plugin...")
+        if (Globals.getOSName().contains('mac') || Globals.getOSName().contains('OS X') || Globals.getOSName().contains('linux')) {
+            installPlugin("${Globals.getUserHome()}/.mcreator/plugins/", "/")
+        } else if (Globals.getOSName().contains('windows')) {
+            installPlugin("${Globals.getUserHome()}\\.mcreator\\plugins\\", "\\")
+        }
+    }
+}
+
+tasks.register('runMCreatorFromCMD', Exec) {
+    dependsOn install
+    group("mcreator_plugins")
+    workingDir Globals.MCREATOR_ROOT_FOLDER_WINDOWS
+    commandLine 'cmd', '/c', 'mcreator.exe'
+    standardOutput = System.out
+    errorOutput = System.err
+    ignoreExitValue = true
+}
+
+static def installPlugin(String path, String separator) {
+    File des = new File(path + Globals.getArchiveName())
+    File original = new File("${System.getProperty("user.dir")}${separator}build${separator}${Globals.getArchiveName()}")
+    if (des.exists()) {
+        des.delete()
+    }
+    try {
+        FileOutputStream os = new FileOutputStream(des)
+        Files.copy(original.toPath(), os)
+        println("Plugin successfully installed to $path")
+    } catch (IOException e) {
+        e.printStackTrace()
+        throw new RuntimeException("Could not install plugin!")
+    }
+}
