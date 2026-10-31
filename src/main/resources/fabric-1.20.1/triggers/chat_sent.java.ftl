@@ -1,6 +1,6 @@
 <#include "procedures.java.ftl">
 public ${name}Procedure() {
-	ServerMessageEvents.CHAT_MESSAGE.register((message, sender, params) -> {
+	ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
 		<#assign dependenciesCode><#compress>
 			<@procedureDependenciesCode dependencies, {
 			"x": "sender.getX()",
@@ -8,10 +8,10 @@ public ${name}Procedure() {
 			"z": "sender.getZ()",
 			"world": "sender.level()",
 			"entity": "sender",
-			"text": "message"
+			"text": "message.signedContent()"
 			}/>
 		</#compress></#assign>
 		execute(${dependenciesCode});
+		return !${package}.network.${JavaModName}Utils.consumeEventCanceled();
 	});
 }
-

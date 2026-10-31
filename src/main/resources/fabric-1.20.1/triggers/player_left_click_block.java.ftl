@@ -15,7 +15,9 @@ public ${name}Procedure() {
 			}/>
 		</#compress></#assign>
 		execute(${dependenciesCode});
-		
+		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
+			return InteractionResult.FAIL;
+
 		return InteractionResult.PASS;
 	});
 }

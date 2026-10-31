@@ -13,6 +13,8 @@ public ${name}Procedure() {
 			}/>
 		</#compress></#assign>
 		execute(${dependenciesCode});
+		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
+			return InteractionResultHolder.fail(player.getItemInHand(hand));
 		return InteractionResultHolder.pass(player.getItemInHand(hand));
 	});
 }

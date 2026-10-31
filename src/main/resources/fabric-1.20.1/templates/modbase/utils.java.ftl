@@ -279,6 +279,27 @@ public class ${JavaModName}Utils {
 		return entity.getFluidHeight(FluidTags.WATER);
 	}
 
+	// ------------------------------------------------------------- event flow
+
+	/*
+	 * Cancellation bridge for procedure blocks.
+	 *
+	 * Fabric callbacks express cancellation by returning false / FAIL, while the procedure body
+	 * is a plain method. The cancel_event procedure block raises this per-thread flag and the
+	 * trigger that registered the callback turns it into the Fabric return value.
+	 */
+	private static final ThreadLocal<Boolean> EVENT_CANCELED = ThreadLocal.withInitial(() -> Boolean.FALSE);
+
+	public static void cancelEvent() {
+		EVENT_CANCELED.set(Boolean.TRUE);
+	}
+
+	public static boolean consumeEventCanceled() {
+		boolean canceled = EVENT_CANCELED.get();
+		EVENT_CANCELED.set(Boolean.FALSE);
+		return canceled;
+	}
+
 	// ------------------------------------------------------------ block states
 
 	/*

@@ -25,6 +25,9 @@
 <#include "../triggers.java.ftl">
 
 <#assign tabMap = w.getCreativeTabMap()>
+<#assign filteredCustomProperties = ((data.customProperties)![])?filter(e ->
+	e.property().getName().startsWith("CUSTOM:") || generator.map(e.property().getName(), "blockstateproperties") != "")>
+
 <#assign customTabs = tabMap.keySet()?filter(e -> e?starts_with('CUSTOM:'))>
 <#assign blockSetType = (data.blockSetType!"OAK")?has_content?then(data.blockSetType!"OAK", "OAK")>
 
@@ -73,6 +76,29 @@ public class ${name}Block extends
 	<#if data.isWaterloggable>
 		public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	</#if>
+
+	<#list filteredCustomProperties as prop>
+		<#assign customPropSource = prop.property().getName()>
+		<#assign customPropName = customPropSource?replace("CUSTOM:", "")>
+		<#assign customPropType = prop.property().getClass().getSimpleName()>
+		<#if customPropSource?starts_with("CUSTOM:")>
+			<#if customPropType == "LogicType">
+				public static final BooleanProperty ${customPropName?upper_case} = BooleanProperty.create("${customPropName}");
+			<#elseif customPropType == "IntegerType">
+				public static final IntegerProperty ${customPropName?upper_case} = IntegerProperty.create("${customPropName}", ${prop.property().getMin()}, ${prop.property().getMax()});
+			<#elseif customPropType == "StringType">
+				public static final EnumProperty<${StringUtils.snakeToCamel(customPropName)}Property> ${customPropName?upper_case} = EnumProperty.create("${customPropName}", ${StringUtils.snakeToCamel(customPropName)}Property.class);
+			</#if>
+		<#else>
+			<#if customPropType == "LogicType">
+				public static final BooleanProperty ${customPropName?upper_case} = ${generator.map(customPropName, "blockstateproperties")};
+			<#elseif customPropType == "IntegerType">
+				public static final IntegerProperty ${customPropName?upper_case} = ${generator.map(customPropName, "blockstateproperties")};
+			<#elseif customPropType == "StringType">
+				public static final EnumProperty<${generator.map(customPropName, "blockstateproperties", 2)}> ${customPropName?upper_case} = ${generator.map(customPropName, "blockstateproperties")};
+			</#if>
+		</#if>
+	</#list>
 
 	<#macro blockProperties>
 		BlockBehaviour.Properties.of()
@@ -215,7 +241,7 @@ public class ${name}Block extends
 			super(PROPERTIES);
 		</#if>
 
-		<#if (data.rotationMode != 0 || data.isWaterloggable)>
+		<#if (data.rotationMode != 0 || data.isWaterloggable || filteredCustomProperties?has_content)>
 		this.registerDefaultState(this.stateDefinition.any()
 				<#if data.rotationMode == 1 || data.rotationMode == 3>
 					.setValue(FACING, Direction.NORTH)
@@ -230,6 +256,19 @@ public class ${name}Block extends
 				<#if data.isWaterloggable>
 					.setValue(WATERLOGGED, false)
 				</#if>
+				<#list filteredCustomProperties as prop>
+					<#assign customPropSource = prop.property().getName()>
+					<#assign customPropName = customPropSource?replace("CUSTOM:", "")>
+					<#if prop.property().getClass().getSimpleName() == "StringType">
+						<#if customPropSource?starts_with("CUSTOM:")>
+						.setValue(${customPropName?upper_case}, ${StringUtils.snakeToCamel(customPropName)}Property.${prop.value()?upper_case})
+						<#else>
+						.setValue(${customPropName?upper_case}, ${customPropName?upper_case}.getValue("${prop.value()}").get())
+						</#if>
+					<#else>
+						.setValue(${customPropName?upper_case}, ${prop.value()?c})
+					</#if>
+				</#list>
 		);
 		</#if>
 
@@ -275,7 +314,7 @@ public class ${name}Block extends
 	}
 	</#if>
 
-	<#if data.rotationMode != 0 || data.isWaterloggable>
+	<#if data.rotationMode != 0 || data.isWaterloggable || filteredCustomProperties?has_content>
 		@Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 				<#assign props = []>
 				<#if data.rotationMode == 5>
@@ -289,6 +328,9 @@ public class ${name}Block extends
 				<#if data.isWaterloggable>
 					<#assign props += ["WATERLOGGED"]>
 				</#if>
+				<#list filteredCustomProperties as prop>
+					<#assign props += [prop.property().getName()?replace("CUSTOM:", "")?upper_case]>
+				</#list>
 				builder.add(${props?join(", ")});
 		}
 
@@ -655,6 +697,31 @@ public class ${name}Block extends
 				</#if>
 			</#if>
 		}
+
+	<#list filteredCustomProperties as prop>
+		<#if prop.property().getClass().getSimpleName() == "StringType" && prop.property().getName()?starts_with("CUSTOM:")>
+			<#assign customPropClass = StringUtils.snakeToCamel(prop.property().getName()?replace("CUSTOM:", ""))>
+			public enum ${customPropClass}Property implements StringRepresentable {
+				<#list prop.property().getArrayData() as value>
+				${value?upper_case}("${value}")<#sep>,
+				</#list>;
+
+				private final String name;
+
+				private ${customPropClass}Property(String name) {
+					this.name = name;
+				}
+
+				@Override public String getSerializedName() {
+					return this.name;
+				}
+
+				@Override public String toString() {
+					return this.name;
+				}
+			}
+		</#if>
+	</#list>
 
 }
 </#compress>

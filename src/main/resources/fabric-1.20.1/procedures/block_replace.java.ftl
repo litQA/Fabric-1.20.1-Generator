@@ -8,14 +8,7 @@ world.setBlock(${toBlockPos(input$x,input$y,input$z)}, ${mappedBlockToBlockState
 	BlockState _bs = ${mappedBlockToBlockStateCode(input$block)};
 
 	<#if field$state?lower_case == "true">
-	BlockState _bso = world.getBlockState(_bp);
-	for(Map.Entry<Property<?>, Comparable<?>> entry : _bso.getValues().entrySet()) {
-		Property _property = _bs.getBlock().getStateDefinition().getProperty(entry.getKey().getName());
-		if (_property != null && _bs.getValue(_property) != null)
-			try {
-				_bs = _bs.setValue(_property, (Comparable) entry.getValue());
-			} catch (Exception e) {}
-	}
+	_bs = ${package}.network.${JavaModName}Utils.copyProperties(_bs, world.getBlockState(_bp));
 	</#if>
 
 	<#if field$nbt?lower_case == "true">

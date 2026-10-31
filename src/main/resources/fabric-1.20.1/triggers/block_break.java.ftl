@@ -15,6 +15,6 @@ public ${name}Procedure() {
 			}/>
 		</#compress></#assign>
 		execute(${dependenciesCode});
-		return true;
+		return !${package}.network.${JavaModName}Utils.consumeEventCanceled();
 	});
 }
