@@ -1,6 +1,6 @@
-<#-- Fabric 1.20.1：该全局触发器在 Fabric API 0.92.12 中没有等价事件；1.21.8 参考实现是用 mixin 触发 Event，本阶段按计划不引入 mixin。
-     这里生成可编译的空实现（不注册任何回调，过程体不会被执行），待后续 mixin 立项后补全。
-     文档：MIGRATION-PLAN-V2.md §2 P0-C「第 3 类：需要 mixin 或明确不支持」。 -->
+<#-- Fabric 1.20.1: Fabric API 0.92.12 provides no equivalent event for this global trigger. The 1.21.8 reference implementation fires a custom Event through a mixin, which is out of scope for this release.
+     A compilable stub is generated instead (no callback is registered and the procedure body never runs). It must be completed once the mixin work is scheduled.
+     See the generator documentation for the list of unsupported triggers. -->
 public ${name}Procedure() {
-	// Unsupported on Fabric 1.20.1 without mixins - see MIGRATION-PLAN-V2.md
+	// Unsupported on Fabric 1.20.1 without mixins. See the generator documentation.
 }

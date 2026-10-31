@@ -1,2 +1,3 @@
 <#include "mcitems.ftl">
-(${mappedBlockToBlock(input$block)}.getStateDefinition().getProperty(${input$property}) instanceof BooleanProperty _getbp${cbi} && ${mappedBlockToBlockStateCode(input$block)}.getValue(_getbp${cbi}))
+<#assign _state><#if input$block?contains("blockstate")>blockstate<#else>${mappedBlockToBlockStateCode(input$block)}</#if></#assign>
+(${package}.network.${JavaModName}Utils.getBooleanProperty(_state, ${input$property}))

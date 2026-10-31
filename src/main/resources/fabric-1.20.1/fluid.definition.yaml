@@ -1,6 +1,8 @@
-# Fabric 1.20.1：本生成器不支持 fluid 元素（继承自 forge-1.20.1 的定义只提供 Forge 专用模板，
-# 2024.4 基线同样没有 templates/fluid/）。这里把模板与标签全部置空，使 fluid 元素不再生成任何
-# Forge 代码或无效数据包；GUI 仍会显示该元素类型，但生成结果为空（文档见 MIGRATION-PLAN-V2.md §2 P1-A）。
+# Fabric 1.20.1: fluid elements are not supported by this generator.
+# The definition inherited from forge-1.20.1 only provides Forge-specific templates and the
+# 2024.4 baseline ships no templates/fluid/ directory either. All templates and tags are cleared
+# so that no Forge code or invalid data is generated; the element type remains visible in the
+# user interface, but it produces no output. See MIGRATION-PLAN-V2.md, section 10.3.
 templates: []
 global_templates: []
 localizationkeys: []

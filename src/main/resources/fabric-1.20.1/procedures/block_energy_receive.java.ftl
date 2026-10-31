@@ -1,2 +1,2 @@
 <#include "mcelements.ftl">
-// Fabric 1.20.1: 没有 Forge Energy capability，能量接收过程块为空实现
+// Fabric 1.20.1: Forge Energy capability is not available; this block is a no-op.

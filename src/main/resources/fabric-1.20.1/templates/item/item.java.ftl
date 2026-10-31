@@ -111,30 +111,11 @@ public class ${name}Item extends Item {
 		}
 	</#if>
 
-	<#if data.stayInGridWhenCrafting>
-		@Override public boolean hasCraftingRemainingItem() {
-			return true;
-		}
-
-		<#if data.recipeRemainder?? && !data.recipeRemainder.isEmpty()>
-			@Override public ItemStack getRecipeRemainder(ItemStack itemstack) {
-				return ${mappedMCItemToItemStackCode(data.recipeRemainder, 1)};
-			}
-		<#elseif data.damageOnCrafting && data.damageCount != 0>
-			@Override public ItemStack getRecipeRemainder(ItemStack itemstack) {
-				ItemStack retval = new ItemStack(this);
-				retval.setDamageValue(itemstack.getDamageValue() + 1);
-				if(retval.getDamageValue() >= retval.getMaxDamage()) {
-					return ItemStack.EMPTY;
-				}
-				return retval;
-			}
-		<#else>
-			@Override public ItemStack getRecipeRemainder(ItemStack itemstack) {
-				return new ItemStack(this);
-			}
-		</#if>
-	</#if>
+	<#--
+	 # Crafting remainders are not supported on Fabric 1.20.1: Item#getCraftingRemainingItem is final
+	 # and Item.Properties exposes no craftingRemainingItem setter. The item is consumed when crafted.
+	 # Restoring the behaviour requires an accessor mixin and is tracked as a known limitation.
+	-->
 
 	<#if data.enchantability != 0>
 		@Override public int getEnchantmentValue() {

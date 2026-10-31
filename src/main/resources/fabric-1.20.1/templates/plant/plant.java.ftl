@@ -146,7 +146,7 @@ public class ${name}Block extends <#if data.plantType == "normal">Flower<#elseif
 			.jumpFactor(${data.jumpFactor}f)
 		</#if>
 		<#if data.luminance != 0>
-			.lightLevel(s -> ${data.luminance})
+			.lightLevel(state -> ${data.luminance})
 		</#if>
 		<#if !data.useLootTableForDrops && (data.dropAmount == 0)>
 			.noLootTable()

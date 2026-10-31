@@ -1,2 +1,3 @@
 <#include "mcitems.ftl">
-/*@int*/(${mappedBlockToBlock(input$block)}.getStateDefinition().getProperty(${input$property}) instanceof IntegerProperty _getip${cbi} ? ${mappedBlockToBlockStateCode(input$block)}.getValue(_getip${cbi}) : -1)
+<#assign _state><#if input$block?contains("blockstate")>blockstate<#else>${mappedBlockToBlockStateCode(input$block)}</#if></#assign>
+/*@int*/(${package}.network.${JavaModName}Utils.getIntegerProperty(_state, ${input$property}))

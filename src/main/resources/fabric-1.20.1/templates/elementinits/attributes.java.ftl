@@ -3,8 +3,9 @@
  *	MCreator note: This file will be REGENERATED on each build.
  *
  *	Fabric 1.20.1: attributes are registered directly in BuiltInRegistries.ATTRIBUTE.
- *	把自定义属性挂到原版实体/玩家上需要 mixin 复制 vanilla AttributeSupplier（1.21.8 参考用的是
- *	AttributeSupplierAccessor mixin），本阶段不做，见 MIGRATION-PLAN-V2.md §2 P1-A。
+ *	Attaching custom attributes to vanilla entities or players requires copying the vanilla
+ *	AttributeSupplier through an accessor mixin (as the 1.21.8 reference does); that is out of
+ *	scope for this release.
  */
 
 package ${package}.init;

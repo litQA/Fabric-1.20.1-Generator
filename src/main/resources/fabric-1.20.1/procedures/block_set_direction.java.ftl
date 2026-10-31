@@ -1,14 +1,14 @@
 <#include "mcelements.ftl">
 {
 	Direction _dir = ${input$direction};
-	BlockPos _pos = ${toBlockPos(input$x,input$y,input$z)};
-	BlockState _bs =  world.getBlockState(_pos);
-	Property<?> _property = _bs.getBlock().getStateDefinition().getProperty("facing");
-	if (_property instanceof DirectionProperty _dp && _dp.getPossibleValues().contains(_dir)) {
-		world.setBlock(_pos, _bs.setValue(_dp, _dir), 3);
+	BlockPos _pos = ${toBlockPos(input$x, input$y, input$z)};
+	BlockState _bs = world.getBlockState(_pos);
+	DirectionProperty _facing = ${package}.network.${JavaModName}Utils.findDirectionProperty(_bs, "facing");
+	if (_facing != null && _facing.getPossibleValues().contains(_dir)) {
+		world.setBlock(_pos, _bs.setValue(_facing, _dir), 3);
 	} else {
-		_property = _bs.getBlock().getStateDefinition().getProperty("axis");
-		if (_property instanceof EnumProperty _ap && _ap.getPossibleValues().contains(_dir.getAxis()))
-			world.setBlock(_pos, _bs.setValue(_ap, _dir.getAxis()), 3);
+		EnumProperty<?> _axis = ${package}.network.${JavaModName}Utils.findEnumProperty(_bs, "axis");
+		if (_axis != null && _axis.getPossibleValues().contains(_dir.getAxis()))
+			world.setBlock(_pos, ${package}.network.${JavaModName}Utils.withDirection(_bs, _dir), 3);
 	}
 }

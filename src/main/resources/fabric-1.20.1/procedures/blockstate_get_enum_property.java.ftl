@@ -1,2 +1,3 @@
 <#include "mcitems.ftl">
-(${mappedBlockToBlock(input$block)}.getStateDefinition().getProperty(${input$property}) instanceof EnumProperty _getep${cbi} ? ${mappedBlockToBlockStateCode(input$block)}.getValue(_getep${cbi}).toString() : "")
+<#assign _state><#if input$block?contains("blockstate")>blockstate<#else>${mappedBlockToBlockStateCode(input$block)}</#if></#assign>
+(${package}.network.${JavaModName}Utils.getEnumProperty(_state, ${input$property}))

@@ -31,12 +31,12 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 public class ${JavaModName}Tabs {
 
 	<#list tabs as tab>
-		public static ResourceKey<CreativeModeTab> TAB_${tab.getModElement().getRegistryNameUpper()} = ResourceKey.create(Registries.CREATIVE_MODE_TAB, new ResourceLocation(${JavaModName}.MODID, "${tab.getModElement().getRegistryName()}"));
+		public static ResourceKey<CreativeModeTab> TAB_${tab.getModElement().getName()?upper_case} = ResourceKey.create(Registries.CREATIVE_MODE_TAB, new ResourceLocation(${JavaModName}.MODID, "${tab.getModElement().getRegistryName()}"));
 	</#list>
 
 	public static void load() {
 		<#list tabs as tab>
-		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TAB_${tab.getModElement().getRegistryNameUpper()}, FabricItemGroup.builder()
+		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TAB_${tab.getModElement().getName()?upper_case}, FabricItemGroup.builder()
 			.title(Component.translatable("item_group." + ${JavaModName}.MODID + ".${tab.getModElement().getRegistryName()}"))
 			.icon(()-> ${mappedMCItemToItemStackCode(tab.icon, 1)}).build());
 		</#list>

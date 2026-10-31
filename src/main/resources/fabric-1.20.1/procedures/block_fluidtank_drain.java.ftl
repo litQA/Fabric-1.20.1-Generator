@@ -1,2 +1,2 @@
 <#include "mcelements.ftl">
-// Fabric 1.20.1: 没有 fluid tank capability，排液过程块为空实现
+// Fabric 1.20.1: fluid tank capability is not available; this block is a no-op.
