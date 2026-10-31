@@ -1,4 +1,4 @@
-<img  height="200" alt="fabric generator banner" src="https://github.com/user-attachments/assets/ea7ef71c-10dd-43fe-81ff-afb9f14d3a17" />
+<img width="1000"  alt="fabric generator banner" src="https://github.com/user-attachments/assets/beda0101-75e8-4393-bab2-fff690f10539" />
 
 # Fabric Generator 1.20.1 for MCreator 2026.2
 
@@ -18,7 +18,7 @@ The priority is not adding features. It is compatibility:
 
 ## AI-generated code
 
-<img width="666" alt="dsh" src="https://github.com/user-attachments/assets/1b0b22c9-5213-48eb-9e51-6de70e852dec" />
+<img width="1000" alt="dsh" src="https://github.com/user-attachments/assets/1b0b22c9-5213-48eb-9e51-6de70e852dec" />
 
 This project includes code generated with **DSH (AI)** assistance.
 
