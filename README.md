@@ -1,4 +1,4 @@
-<img  width="666" alt="fabric1 1201" src="https://github.com/user-attachments/assets/4ff28629-afa7-4cc2-9d12-5858d4fc2c3d" />
+<img  height="200" alt="fabric generator banner" src="https://github.com/user-attachments/assets/ea7ef71c-10dd-43fe-81ff-afb9f14d3a17" />
 
 # Fabric Generator 1.20.1 for MCreator 2026.2
 
