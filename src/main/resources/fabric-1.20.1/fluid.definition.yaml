@@ -1,9 +1,36 @@
-# Fabric 1.20.1: fluid elements are not supported by this generator.
-# The definition inherited from forge-1.20.1 only provides Forge-specific templates and the
-# 2024.4 baseline ships no templates/fluid/ directory either. All templates and tags are cleared
-# so that no Forge code or invalid data is generated; the element type remains visible in the
-# user interface, but it produces no output. See MIGRATION-PLAN-V2.md, section 10.3.
-templates: []
-global_templates: []
-localizationkeys: []
-tags: []
+templates:
+  - template: fluid/fluid.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/fluid/@NAMEFluid.java"
+  - template: fluid/fluidblock.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/block/@NAMEBlock.java"
+  - template: fluid/fluidbucket.java.ftl
+    condition: generateBucket
+    name: "@SRCROOT/@BASEPACKAGEPATH/item/@NAMEItem.java"
+  - template: json/bucket.json.ftl
+    condition: generateBucket
+    writer: json
+    name: "@MODASSETSROOT/models/item/@registryname_bucket.json"
+  - template: json/fluid_states.json.ftl
+    writer: json
+    name: "@MODASSETSROOT/blockstates/@registryname.json"
+  - template: json/fluid.json.ftl
+    writer: json
+    name: "@MODASSETSROOT/models/block/@registryname.json"
+
+global_templates:
+  - template: elementinits/fluids.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameFluids.java"
+
+localizationkeys:
+  - key: fluid.@modid.@registryname
+    mapto: name
+  - key: block.@modid.@registryname
+    mapto: name
+  - key: item.@modid.@registryname_bucket
+    mapto: bucketName
+    condition: generateBucket
+  - fromlist: data.getFixedSpecialInformation()
+    key: item.@modid.@registryname_bucket.description_@item_index
+
+tags:
+  - tag: BLOCKS:minecraft:replaceable

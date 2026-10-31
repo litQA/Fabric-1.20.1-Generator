@@ -107,7 +107,7 @@ public class ${name}Item extends Item {
 
 	<#if data.hasNonDefaultAnimation()>
 		@Override public UseAnim getUseAnimation(ItemStack itemstack) {
-			return UseAnim.${data.animation?upper_case};
+			return ${data.animation};
 		}
 	</#if>
 

@@ -55,6 +55,7 @@ public class ${JavaModName} implements ModInitializer {
 		<#if w.hasElementsOfType("potioneffect")>${JavaModName}MobEffects.load();</#if>
 		<#if w.hasElementsOfType("potion")>${JavaModName}Potions.load();</#if>
 		<#if types["base:entities"]??>${JavaModName}Entities.load();</#if>
+		<#if w.hasElementsOfType("fluid")>${JavaModName}Fluids.load();</#if>
 		<#if types["base:blocks"]??>${JavaModName}Blocks.load();</#if>
 		<#if types["base:items"]??>${JavaModName}Items.load();</#if>
 		<#if types["base:blockentities"]??>${JavaModName}BlockEntities.load();</#if>

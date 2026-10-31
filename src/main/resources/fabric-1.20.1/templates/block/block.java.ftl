@@ -28,6 +28,7 @@
 <#assign filteredCustomProperties = ((data.customProperties)![])?filter(e ->
 	e.property().getName().startsWith("CUSTOM:") || generator.map(e.property().getName(), "blockstateproperties") != "")>
 
+<#assign vanillaTabs = tabMap.keySet()?filter(e -> !e?starts_with('CUSTOM:'))>
 <#assign customTabs = tabMap.keySet()?filter(e -> e?starts_with('CUSTOM:'))>
 <#assign blockSetType = (data.blockSetType!"OAK")?has_content?then(data.blockSetType!"OAK", "OAK")>
 
@@ -276,11 +277,37 @@ public class ${name}Block extends
 			FlammableBlockRegistry.getDefaultInstance().add(this, ${data.flammability}, ${data.fireSpreadSpeed});
 		</#if>
 
+		<#if data.hasBlockItem>
+		<#list vanillaTabs as tabName>
+			<#list tabMap.get(tabName) as tabElement>
+				<#if tabElement == "CUSTOM:" + name>
+					<#if tabName == "DECORATIONS">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.NATURAL_BLOCKS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "REDSTONE">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.REDSTONE_BLOCKS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "FOOD">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "TOOLS">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "MATERIALS">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "MISC">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "TRANSPORTATION">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "BREWING">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COLORED_BLOCKS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#else>
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.${tabName}).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					</#if>
+				</#if>
+			</#list>
+		</#list>
 		<#assign modifiedTabs = customTabs?map(tab -> tab?replace('CUSTOM:', '')?upper_case)>
-
-        <#list modifiedTabs as tabName>
-            ItemGroupEvents.modifyEntriesEvent(${JavaModName}Tabs.TAB_${tabName}).register(content -> content.accept(this));
-        </#list>
+		<#list modifiedTabs as tabName>
+			ItemGroupEvents.modifyEntriesEvent(${JavaModName}Tabs.TAB_${tabName}).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+		</#list>
+		</#if>
 	}
 
 	<@addSpecialInformation data.specialInformation, true/>

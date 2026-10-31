@@ -64,6 +64,9 @@ public class ${name}Procedure {
 		${procedurecode}
 	}
 
+	${additional_code!''}
+
+	${extra_templates_code!''}
 }
 
 </#compress>

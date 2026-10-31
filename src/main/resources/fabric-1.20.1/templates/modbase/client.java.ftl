@@ -41,6 +41,7 @@ import net.fabricmc.api.Environment;
 		<#if w.hasElementsOfType("particle")>${JavaModName}ParticleTypes.clientLoad();</#if>
 		<#if w.hasElementsOfType("overlay")>${JavaModName}Overlays.load();</#if>
 		<#if w.hasElementsOfBaseType("block")>${JavaModName}Blocks.clientLoad();</#if>
+		<#if w.hasElementsOfType("fluid")>${JavaModName}Fluids.clientLoad();</#if>
 		<#if w.hasElementsOfType("gui")>${JavaModName}Screens.load();</#if>
 		<#if w.hasJavaModels()>${JavaModName}Models.load();</#if>
 		<#if w.hasElementsOfBaseType("entity")>${JavaModName}EntityRenderers.load();</#if>

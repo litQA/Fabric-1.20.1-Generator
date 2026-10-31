@@ -46,6 +46,8 @@ public class ${JavaModName}Items {
 			</#if>
 		<#elseif item.getModElement().getTypeString() == "livingentity">
 			public static Item ${item.getModElement().getRegistryNameUpper()}_SPAWN_EGG;
+		<#elseif item.getModElement().getTypeString() == "fluid" && item.generateBucket>
+			public static Item ${item.getModElement().getRegistryNameUpper()}_BUCKET;
 		<#elseif item.getModElement().getTypeString() != "dimension">
 			public static Item ${item.getModElement().getRegistryNameUpper()};
 		</#if>
@@ -74,6 +76,8 @@ public class ${JavaModName}Items {
 				<#else>
 					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(content -> content.accept(${item.getModElement().getRegistryNameUpper()}_SPAWN_EGG));
 				</#if>
+			<#elseif item.getModElement().getTypeString() == "fluid" && item.generateBucket>
+				${item.getModElement().getRegistryNameUpper()}_BUCKET = register("${item.getModElement().getRegistryName()}_bucket", new ${item.getModElement().getName()}Item());
 			<#elseif item.getModElement().getTypeString() == "block" || item.getModElement().getTypeString() == "plant">
 				${item.getModElement().getRegistryNameUpper()} = register("${item.getModElement().getRegistryName()}", new BlockItem(${JavaModName}Blocks.${item.getModElement().getRegistryNameUpper()}, new Item.Properties()));
 			<#else>

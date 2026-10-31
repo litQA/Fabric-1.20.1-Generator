@@ -44,6 +44,10 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 
 <#compress>
+<#assign tabMap = w.getCreativeTabMap()>
+<#assign vanillaTabs = tabMap.keySet()?filter(e -> !e?starts_with('CUSTOM:'))>
+<#assign customTabs = tabMap.keySet()?filter(e -> e?starts_with('CUSTOM:'))>
+
 <#assign interfaces = []>
 <#if data.hasTileEntity>
 	<#assign interfaces += ["EntityBlock"]>
@@ -167,6 +171,42 @@ public class ${name}Block extends <#if data.plantType == "normal">Flower<#elseif
 
 		<#if data.flammability != 0 && data.fireSpreadSpeed != 0>
 			FlammableBlockRegistry.getDefaultInstance().add(this, ${data.flammability}, ${data.fireSpreadSpeed});
+		</#if>
+
+		<#if data.hasBlockItem>
+		<#list vanillaTabs as tabName>
+			<#list tabMap.get(tabName) as tabElement>
+				<#if tabElement == "CUSTOM:" + name>
+					<#if tabName == "DECORATIONS">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.NATURAL_BLOCKS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "REDSTONE">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.REDSTONE_BLOCKS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "FOOD">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "TOOLS">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "MATERIALS">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "MISC">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "TRANSPORTATION">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#elseif tabName == "BREWING">
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COLORED_BLOCKS).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					<#else>
+					ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.${tabName}).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+					</#if>
+				</#if>
+			</#list>
+		</#list>
+		<#list customTabs as tabName>
+			<#list tabMap.get(tabName) as tabElement>
+				<#if tabElement == "CUSTOM:" + name>
+					<#assign modifiedTabName = tabName.replace("CUSTOM:", "")?upper_case>
+					ItemGroupEvents.modifyEntriesEvent(${JavaModName}Tabs.TAB_${modifiedTabName}).register(content -> content.accept(new ItemStack(${JavaModName}Blocks.${data.getModElement().getRegistryNameUpper()})));
+				</#if>
+			</#list>
+		</#list>
 		</#if>
 	}
 
