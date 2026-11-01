@@ -66,9 +66,9 @@ public class ${name}Procedure {
 
 	${additional_code!''}
 
+
 	${extra_templates_code!''}
 }
-
 </#compress>
 
 <#-- @formatter:on -->
