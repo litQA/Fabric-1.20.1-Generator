@@ -1,6 +1,6 @@
 <img width="1000"  alt="fabric generator banner" src="https://github.com/user-attachments/assets/beda0101-75e8-4393-bab2-fff690f10539" />
 
-# Fabric Generator 1.20.1
+# Fabric 1.20.1 Generator 
 
 **Status: Exploratory research.** This is not a finished product. It is an early-stage effort to keep a Fabric 1.20.1 generator alive on newer MCreator versions.
 
