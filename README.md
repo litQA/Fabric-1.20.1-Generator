@@ -33,3 +33,11 @@ This is for people who still work with **Fabric 1.20.1** and want to stay on a n
 ## License
 
 This project is licensed under **CC BY-NC 4.0**.
+
+# MCreator - Minecraft Mod Maker
+
+[![MCreator](https://mcreator.net/image/brand/mcreator300s.png)](https://mcreator.net/)
+
+MCreator is an open-source software used to make Minecraft Java Edition mods, Minecraft Bedrock Edition Add-Ons, resource packs, and data packs using an intuitive easy-to-learn interface or with an integrated code editor. It is used worldwide by Minecraft players, aspiring mod developers, for education, online classes, and STEM workshops. 
+
+NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.
