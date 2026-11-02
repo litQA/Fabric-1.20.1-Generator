@@ -16,7 +16,7 @@ The priority is not adding features. It is compatibility:
 - Update **Fabric API** and **Fabric Loader** to current versions.
 - Only after that foundation is stable, consider selectively bringing in features from newer MCreator versions.
 
-## AI-generated code
+## DSH Empowers Accelerated Plugin Development
 
 <img width="1000" alt="dsh" src="https://github.com/user-attachments/assets/1b0b22c9-5213-48eb-9e51-6de70e852dec" />
 
