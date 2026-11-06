@@ -54,12 +54,12 @@ public class ${JavaModName} implements ModInitializer {
 		<#if w.hasElementsOfType("bannerpattern")>${JavaModName}BannerPatterns.load();</#if>
 		<#if w.hasElementsOfType("potioneffect")>${JavaModName}MobEffects.load();</#if>
 		<#if w.hasElementsOfType("potion")>${JavaModName}Potions.load();</#if>
-		<#if types["base:entities"]??>${JavaModName}Entities.load();</#if>
+		<#if types.base_entities?has_content>${JavaModName}Entities.load();</#if>
 		<#if w.hasElementsOfType("fluid")>${JavaModName}Fluids.load();</#if>
-		<#if types["base:blocks"]??>${JavaModName}Blocks.load();</#if>
-		<#if types["base:items"]??>${JavaModName}Items.load();</#if>
-		<#if types["base:blockentities"]??>${JavaModName}BlockEntities.load();</#if>
-		<#if types["base:features"]??>${JavaModName}Features.load();</#if>
+		<#if types.base_blocks?has_content>${JavaModName}Blocks.load();</#if>
+		<#if types.base_items?has_content>${JavaModName}Items.load();</#if>
+		<#if types.base_blockentities?has_content>${JavaModName}BlockEntities.load();</#if>
+		<#if types.base_features?has_content>${JavaModName}Features.load();</#if>
 		<#if w.hasElementsOfType("painting")>${JavaModName}Paintings.load();</#if>
 		<#if w.hasElementsOfType("procedure")>${JavaModName}Procedures.load();</#if>
 		<#if w.hasElementsOfType("command")>${JavaModName}Commands.load();</#if>

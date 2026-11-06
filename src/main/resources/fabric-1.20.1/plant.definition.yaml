@@ -77,3 +77,12 @@ localizationkeys:
     mapto: name
 
 field_exclusions: [ creativePickItem, aiPathNodeType, growapableSpawnType ]
+
+base_types:
+  - block
+  - type: item
+    condition: hasBlockItem
+  - type: configuredfeature
+    condition: generateFeature
+  - type: blockentity
+    condition: hasTileEntity

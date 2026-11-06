@@ -34,3 +34,8 @@ localizationkeys:
 
 tags:
   - tag: BLOCKS:minecraft:replaceable
+
+base_types:
+  - block
+  - type: item
+    condition: generateBucket

@@ -59,3 +59,6 @@ tags:
       - "toolType %= MultiTool"
   - tag: ITEMS:minecraft:shovels
     condition: "toolType %= Spade"
+
+base_types:
+  - item

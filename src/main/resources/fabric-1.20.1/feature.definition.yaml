@@ -21,3 +21,9 @@ global_templates:
     condition: "${w.getElementsOfType('feature')?filter(e -> e.getMetadata('has_nbt_structure')??)?size != 0}"
     name: "@SRCROOT/@BASEPACKAGEPATH/world/features/configurations/StructureFeatureConfiguration.java"
     hidden: true
+
+base_types:
+  - type: configuredfeature
+    condition: hasConfiguredFeature()
+  - type: feature
+    condition: hasGenerationConditions()

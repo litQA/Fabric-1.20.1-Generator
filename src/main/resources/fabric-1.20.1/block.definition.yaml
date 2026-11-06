@@ -542,3 +542,12 @@ global_templates:
 
 field_exclusions: [ displayFluidOverlay, plantsGrowOn, beaconColorModifier, isLadder, enchantPowerBonus, aiPathNodeType,
                     hasEnergyStorage, isFluidTank, energyInitial, energyCapacity, energyMaxReceive, energyMaxExtract, fluidCapacity, fluidRestrictions, canRedstoneConnect ]
+
+base_types:
+  - block
+  - type: item
+    condition: hasBlockItem
+  - type: configuredfeature
+    condition: generateFeature
+  - type: blockentity
+    condition: hasInventory

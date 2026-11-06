@@ -72,3 +72,6 @@ tags:
     condition: isPiglinCurrency
   - tag: BANNER_PATTERNS:@modid:pattern_item/@registryname
     entryprovider: providedBannerPatterns
+
+base_types:
+  - item

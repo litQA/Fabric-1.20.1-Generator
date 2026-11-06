@@ -1,3 +1,22 @@
+# [2026.3-4.0.0.3-beta] - 2026-11-07
+
+## New Content
+- The plugin now ships the `datapack-1.20.1` and `forge-1.20.1` base layers under `fabric-1.20.1-base/`, so MCreator 2026.3 does not need to bundle a 1.20.1 generator.
+
+## Changes
+- The plugin metadata now targets MCreator 2026.3 EAP build 202600344621 and uses plugin weight 10.
+- Element definitions declare their provided base types, and the mod entrypoint uses the 2026.3 `types.base_*` collections.
+- The Gradle build uses the local Gradle distribution under `reference_resources/` and persists the build number in `gradle.properties`.
+
+## Fixes
+Fixed 2 bug(s).
+- The 2026.2 plugin metadata was rejected by the 2026.3 plugin loader.
+- The generated registries were empty because 2026.3 no longer provides base types from the element classes.
+
+## Known Limitations
+- Entity and item animations are outside this upgrade.
+- The 1.20.1 enchantment effect engine, the remaining triggers, and the 2026.3 feature ports are scheduled for the next phases.
+
 # [2026.2-3.0.4-beta] - 2026-11-01
 
 ## New Content

@@ -20,3 +20,8 @@ localizationkeys:
 unmodifiable_ai_bases: [ Bat, MagmaCube, Slime ]
 
 field_exclusions: [ spawnInDungeons, rangedAttackItem ]
+
+base_types:
+  - entity
+  - type: item
+    condition: hasSpawnEgg

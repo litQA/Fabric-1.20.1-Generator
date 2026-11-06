@@ -2,7 +2,7 @@
 
 # Fabric 1.20.1 Generator 
 
-**Status: Exploratory research.** This is not a finished product. It is an early-stage effort to keep a Fabric 1.20.1 generator alive on newer MCreator versions.
+**Status: MCreator 2026.3 EAP baseline.** The generator is being migrated to MCreator 2026.3 EAP; feature parity work is in progress.
 
 ## What this is
 
@@ -10,11 +10,11 @@ A Fabric 1.20.1 generator plugin for MCreator, built on the lineage of [Goldorio
 
 ## Current goal
 
-The priority is not adding features. It is compatibility:
+The current goal is to keep the generator usable on **MCreator 2026.3 EAP** and to restore the features that were previously missing:
 
-- Keep the existing generator's functionality running on **MCreator 2026.2**.
-- Update **Fabric API** and **Fabric Loader** to current versions.
-- Only after that foundation is stable, consider selectively bringing in features from newer MCreator versions.
+- Keep the existing generator's functionality running on **MCreator 2026.3 EAP**.
+- Embed the `datapack-1.20.1` and `forge-1.20.1` base layers so the plugin does not depend on MCreator's bundled 1.20.1 generators.
+- Port the 2026.3 generator model (`base_types`, `types.base_*`) and then add the 2026.3 features and the previously missing triggers.
 
 ## DSH Empowers Accelerated Plugin Development
 
