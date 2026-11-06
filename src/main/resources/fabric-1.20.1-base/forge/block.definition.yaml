@@ -578,6 +578,7 @@ localizationkeys:
   - fromlist: data.getFixedSpecialInformation()
     key: block.@modid.@registryname.description_@item_index
 
+
 tags:
   - tag: BLOCKS:minecraft:mineable/pickaxe
     condition: "destroyTool %= pickaxe"

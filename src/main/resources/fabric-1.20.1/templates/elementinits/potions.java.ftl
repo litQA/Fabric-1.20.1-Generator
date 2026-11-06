@@ -40,7 +40,7 @@ public class ${JavaModName}Potions {
 		</#list>
 	}
 
-	private static Item register(String registryName, Potion element) {
+	private static Potion register(String registryName, Potion element) {
 		return Registry.register(BuiltInRegistries.POTION, new ResourceLocation(${JavaModName}.MODID, registryName), element);
 	}
 

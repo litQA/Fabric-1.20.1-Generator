@@ -60,7 +60,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "tick()V", at = @At("TAIL"), require = 0)
 	private void onPlayerTick(CallbackInfo ci) {
 		Player self = (Player) (Object) this;
-		System.out.println("[MixinProbe] player_ticks reached");
 		${package}.procedures.${name}Procedure.execute(<@mixinArgs/>);
 	}
 }
@@ -72,7 +71,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "giveExperiencePoints(I)V", at = @At("HEAD"), require = 0)
 	private void onXpChange(int amount, CallbackInfo ci) {
 		Player self = (Player) (Object) this;
-		System.out.println("[MixinProbe] player_xp_change reached");
 		${package}.procedures.${name}Procedure.execute(<@mixinArgs/>);
 	}
 }
@@ -84,7 +82,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "giveExperienceLevels(I)V", at = @At("HEAD"), require = 0)
 	private void onXpLevelChange(int amount, CallbackInfo ci) {
 		Player self = (Player) (Object) this;
-		System.out.println("[MixinProbe] player_xp_level_change reached");
 		${package}.procedures.${name}Procedure.execute(<@mixinArgs/>);
 	}
 }
@@ -96,7 +93,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "heal(F)V", at = @At("HEAD"), cancellable = true, require = 0)
 	private void onEntityHealed(float amount, CallbackInfo ci) {
 		LivingEntity self = (LivingEntity) (Object) this;
-		System.out.println("[MixinProbe] entity_healed reached");
 		${package}.procedures.${name}Procedure.execute(<@mixinArgs/>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			ci.cancel();
@@ -110,7 +106,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "causeFallDamage(FFLnet/minecraft/world/damagesource/DamageSource;)Z", at = @At("HEAD"), cancellable = true, require = 0)
 	private void onEntityFall(float fallDistance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
 		LivingEntity self = (LivingEntity) (Object) this;
-		System.out.println("[MixinProbe] entity_falls reached");
 		${package}.procedures.${name}Procedure.execute(<@mixinArgs/>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			cir.setReturnValue(false);
@@ -124,7 +119,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "jumpFromGround()V", at = @At("TAIL"), require = 0)
 	private void onEntityJump(CallbackInfo ci) {
 		LivingEntity self = (LivingEntity) (Object) this;
-		System.out.println("[MixinProbe] entity_jumps reached");
 		${package}.procedures.${name}Procedure.execute(<@mixinArgs/>);
 	}
 }
@@ -136,7 +130,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "onItemPickup(Lnet/minecraft/world/entity/item/ItemEntity;)V", at = @At("HEAD"), require = 0)
 	private void onItemPickup(ItemEntity itemEntity, CallbackInfo ci) {
 		LivingEntity self = (LivingEntity) (Object) this;
-		System.out.println("[MixinProbe] entity_item_pickup reached");
 		${package}.procedures.${name}Procedure.execute(<@mixinArgs/>);
 	}
 }
@@ -148,7 +141,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "dropExperience()V", at = @At("TAIL"), require = 0)
 	private void onDropExperience(CallbackInfo ci) {
 		LivingEntity self = (LivingEntity) (Object) this;
-		System.out.println("[MixinProbe] entity_dropxp reached");
 		${package}.procedures.${name}Procedure.execute(<@mixinArgs/>);
 	}
 }
@@ -161,7 +153,6 @@ abstract class ${name}Mixin {
 	private void onCraftedBy(Level level, Player player, int amount, CallbackInfo ci) {
 		if (player == null || level.isClientSide())
 			return;
-		System.out.println("[MixinProbe] item_crafted reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">player.getX()<#elseif n == "y">player.getY()<#elseif n == "z">player.getZ()<#elseif n == "world">level<#elseif n == "entity">player<#elseif n == "itemstack">(ItemStack) (Object) this<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 	}
 }
@@ -173,7 +164,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "tame(Lnet/minecraft/world/entity/player/Player;)V", at = @At("TAIL"), require = 0)
 	private void onTamed(Player player, CallbackInfo ci) {
 		TamableAnimal self = (TamableAnimal) (Object) this;
-		System.out.println("[MixinProbe] entity_tamed reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">self.getX()<#elseif n == "y">self.getY()<#elseif n == "z">self.getZ()<#elseif n == "world">self.level()<#elseif n == "entity">self<#elseif n == "sourceentity">player<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 	}
 }
@@ -187,7 +177,6 @@ abstract class ${name}Mixin {
 		Mob self = (Mob) (Object) this;
 		if (self.level().isClientSide())
 			return;
-		System.out.println("[MixinProbe] entity_sets_attack_target reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">self.getX()<#elseif n == "y">self.getY()<#elseif n == "z">self.getZ()<#elseif n == "world">self.level()<#elseif n == "entity">target<#elseif n == "sourceentity">self<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 	}
 }
@@ -199,7 +188,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "thunderHit(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LightningBolt;)V", at = @At("HEAD"), require = 0)
 	private void onThunderHit(ServerLevel level, LightningBolt lightning, CallbackInfo ci) {
 		Entity self = (Entity) (Object) this;
-		System.out.println("[MixinProbe] entity_struck_by_lightning reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">self.getX()<#elseif n == "y">self.getY()<#elseif n == "z">self.getZ()<#elseif n == "world">self.level()<#elseif n == "entity">self<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 	}
 }
@@ -211,7 +199,6 @@ abstract class ${name}Mixin {
 	@Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("HEAD"), cancellable = true, require = 0)
 	private void onDrop(ItemStack stack, boolean dropAround, boolean traceItem, CallbackInfoReturnable<ItemEntity> cir) {
 		ServerPlayer self = (ServerPlayer) (Object) this;
-		System.out.println("[MixinProbe] gem_dropped reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">self.getX()<#elseif n == "y">self.getY()<#elseif n == "z">self.getZ()<#elseif n == "world">self.level()<#elseif n == "entity">self<#elseif n == "itemstack">stack<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			cir.setReturnValue(null);
@@ -227,7 +214,6 @@ abstract class ${name}Mixin {
 		ItemEntity self = (ItemEntity) (Object) this;
 		if (self.level().isClientSide() || self.getAge() != 5999)
 			return;
-		System.out.println("[MixinProbe] gem_expired reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">self.getX()<#elseif n == "y">self.getY()<#elseif n == "z">self.getZ()<#elseif n == "world">self.level()<#elseif n == "entity">self<#elseif n == "itemstack">self.getItem()<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 	}
 }
@@ -248,7 +234,6 @@ abstract class ${name}Mixin {
 		boolean farmLand = state.is(net.minecraft.world.level.block.Blocks.FARMLAND);
 		if (!farmLand && !(state.getBlock() instanceof BonemealableBlock bonemealable && bonemealable.isValidBonemealTarget(level, pos, state, false)))
 			return;
-		System.out.println("[MixinProbe] bonemeal_used reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">pos.getX()<#elseif n == "y">pos.getY()<#elseif n == "z">pos.getZ()<#elseif n == "world">level<#elseif n == "entity">player<#elseif n == "itemstack">context.getItemInHand()<#elseif n == "blockstate">state<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			cir.setReturnValue(InteractionResult.FAIL);
@@ -263,7 +248,6 @@ abstract class ${name}Mixin {
 	private void onFarmlandTrampled(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance, CallbackInfo ci) {
 		if (level.isClientSide())
 			return;
-		System.out.println("[MixinProbe] farmland_trampled reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">pos.getX()<#elseif n == "y">pos.getY()<#elseif n == "z">pos.getZ()<#elseif n == "world">level<#elseif n == "entity">entity<#elseif n == "blockstate">state<#elseif n == "falldistance">fallDistance<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			ci.cancel();
@@ -276,7 +260,6 @@ abstract class ${name}Mixin {
 abstract class ${name}Mixin {
 	@Inject(method = "randomTick(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/util/RandomSource;)V", at = @At("HEAD"), cancellable = true, require = 0)
 	private void onCropGrowAttempt(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
-		System.out.println("[MixinProbe] crop_attempts_growth reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">pos.getX()<#elseif n == "y">pos.getY()<#elseif n == "z">pos.getZ()<#elseif n == "world">level<#elseif n == "blockstate">state<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			ci.cancel();
@@ -291,7 +274,6 @@ abstract class ${name}Mixin {
 	private void onGrowTree(ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state, RandomSource random, CallbackInfoReturnable<Boolean> cir) {
 		if (!Boolean.TRUE.equals(cir.getReturnValue()))
 			return;
-		System.out.println("[MixinProbe] sapling_glow reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">pos.getX()<#elseif n == "y">pos.getY()<#elseif n == "z">pos.getZ()<#elseif n == "world">level<#elseif n == "blockstate">state<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 	}
 }
@@ -302,7 +284,6 @@ abstract class ${name}MegaMixin {
 	private void onGrowMegaTree(ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state, RandomSource random, CallbackInfoReturnable<Boolean> cir) {
 		if (!Boolean.TRUE.equals(cir.getReturnValue()))
 			return;
-		System.out.println("[MixinProbe] sapling_glow reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">pos.getX()<#elseif n == "y">pos.getY()<#elseif n == "z">pos.getZ()<#elseif n == "world">level<#elseif n == "blockstate">state<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 	}
 }
@@ -318,7 +299,6 @@ abstract class ${name}Mixin {
 			return;
 		if (self instanceof ServerPlayer serverPlayer && (serverPlayer.connection == null || serverPlayer.hasDisconnected()))
 			return;
-		System.out.println("[MixinProbe] player_useitem_start reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">self.getX()<#elseif n == "y">self.getY()<#elseif n == "z">self.getZ()<#elseif n == "world">self.level()<#elseif n == "entity">self<#elseif n == "itemstack">self.getItemInHand(hand)<#elseif n == "duration">self.getUseItemRemainingTicks()<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			ci.cancel();
@@ -336,7 +316,6 @@ abstract class ${name}Mixin {
 			return;
 		if (self instanceof ServerPlayer serverPlayer && (serverPlayer.connection == null || serverPlayer.hasDisconnected()))
 			return;
-		System.out.println("[MixinProbe] player_useitem_stop reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">self.getX()<#elseif n == "y">self.getY()<#elseif n == "z">self.getZ()<#elseif n == "world">self.level()<#elseif n == "entity">self<#elseif n == "itemstack">self.getUseItem()<#elseif n == "duration">self.getUseItemRemainingTicks()<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			ci.cancel();
@@ -353,7 +332,6 @@ abstract class ${name}Mixin {
 			return;
 		if (entity instanceof ServerPlayer serverPlayer && (serverPlayer.connection == null || serverPlayer.hasDisconnected()))
 			return;
-		System.out.println("[MixinProbe] player_useitem_finish reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">entity.getX()<#elseif n == "y">entity.getY()<#elseif n == "z">entity.getZ()<#elseif n == "world">level<#elseif n == "entity">entity<#elseif n == "itemstack">(ItemStack) (Object) this<#elseif n == "duration">entity.getUseItemRemainingTicks()<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			cir.setReturnValue((ItemStack) (Object) this);
@@ -372,7 +350,6 @@ abstract class ${name}Mixin {
 	private void onPlayerTouch(Player player, CallbackInfo ci) {
 		if (!(player instanceof ServerPlayer serverPlayer) || serverPlayer.takeXpDelay != 0)
 			return;
-		System.out.println("[MixinProbe] entity_pickupxp reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">player.getX()<#elseif n == "y">player.getY()<#elseif n == "z">player.getZ()<#elseif n == "world">player.level()<#elseif n == "entity">player<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			ci.cancel();
@@ -388,7 +365,6 @@ abstract class ${name}Mixin {
 		LivingEntity self = (LivingEntity) (Object) this;
 		if (self.level().isClientSide())
 			return;
-		System.out.println("[MixinProbe] entity_uses_totem reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">self.getX()<#elseif n == "y">self.getY()<#elseif n == "z">self.getZ()<#elseif n == "world">self.level()<#elseif n == "entity">self<#elseif n == "damagesource">source<#elseif n == "sourceentity">source.getEntity()<#elseif n == "immediatesourceentity">source.getDirectEntity()<#elseif n == "itemstack">self.getUseItem()<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			cir.setReturnValue(false);
@@ -406,7 +382,6 @@ abstract class ${name}Mixin {
 		if (!cir.getReturnValue().consumesAction() || context.getPlayer() == null)
 			return;
 		BlockPos pos = context.getClickedPos();
-		System.out.println("[MixinProbe] player_use_hoe reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">pos.getX()<#elseif n == "y">pos.getY()<#elseif n == "z">pos.getZ()<#elseif n == "world">context.getLevel()<#elseif n == "entity">context.getPlayer()<#elseif n == "blockstate">context.getLevel().getBlockState(pos)<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			cir.setReturnValue(InteractionResult.FAIL);
@@ -424,7 +399,6 @@ abstract class ${name}Mixin {
 			return;
 		BlockPos pos = context.getClickedPos().relative(context.getClickedFace());
 		BlockPos against = context.getClickedPos();
-		System.out.println("[MixinProbe] block_multiplace reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">pos.getX()<#elseif n == "y">pos.getY()<#elseif n == "z">pos.getZ()<#elseif n == "px">player.getX()<#elseif n == "py">player.getY()<#elseif n == "pz">player.getZ()<#elseif n == "world">context.getLevel()<#elseif n == "entity">player<#elseif n == "blockstate">context.getLevel().getBlockState(pos)<#elseif n == "placedagainst">context.getLevel().getBlockState(against)<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			cir.setReturnValue(InteractionResult.FAIL);
@@ -439,7 +413,6 @@ abstract class ${name}Mixin {
 	private void onPerformCommand(ParseResults<CommandSourceStack> parseResults, String command, CallbackInfoReturnable<Integer> cir) {
 		CommandSourceStack source = parseResults.getContext().getSource();
 		Entity entity = source.getEntity();
-		System.out.println("[MixinProbe] command_executed reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">source.getPosition().x<#elseif n == "y">source.getPosition().y<#elseif n == "z">source.getPosition().z<#elseif n == "world">source.getLevel()<#elseif n == "entity">entity<#elseif n == "command">command<#elseif n == "arguments">parseResults.getContext().build(command)<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			cir.setReturnValue(0);
@@ -458,7 +431,6 @@ abstract class ${name}Mixin {
 			return;
 		if (player.connection == null || player.hasDisconnected())
 			return;
-		System.out.println("[MixinProbe] player_completes_advancement reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">player.getX()<#elseif n == "y">player.getY()<#elseif n == "z">player.getZ()<#elseif n == "world">player.level()<#elseif n == "entity">player<#elseif n == "advancement">advancement<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 	}
 }
@@ -474,7 +446,6 @@ abstract class ${name}Mixin {
 		Player player = ((FishingHook) (Object) this).getPlayerOwner();
 		if (player == null || player.level().isClientSide())
 			return;
-		System.out.println("[MixinProbe] player_fishes_item reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">player.getX()<#elseif n == "y">player.getY()<#elseif n == "z">player.getZ()<#elseif n == "world">player.level()<#elseif n == "entity">player<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 	}
 }
@@ -489,7 +460,6 @@ abstract class ${name}Mixin {
 			return;
 		if (self instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected())
 			return;
-		System.out.println("[MixinProbe] entity_blocks reached");
 		${package}.procedures.${name}Procedure.execute(<#list dependencies as dep><#assign n = dep.getName()><#if n == "x">self.getX()<#elseif n == "y">self.getY()<#elseif n == "z">self.getZ()<#elseif n == "world">self.level()<#elseif n == "entity">self<#elseif n == "damagesource">source<#elseif n == "sourceentity">source.getEntity()<#elseif n == "immediatesourceentity">source.getDirectEntity()<#elseif n == "originalblockedamount">amount<#elseif n == "blockedamount">amount<#elseif n == "event">null<#elseif dep.getType(generator.getWorkspace()) == "double" || dep.getType(generator.getWorkspace()) == "int">0<#else>null</#if><#if dep?has_next>,</#if></#list>);
 		if (${package}.network.${JavaModName}Utils.consumeEventCanceled())
 			cir.setReturnValue(false);

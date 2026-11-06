@@ -31,33 +31,29 @@ public class ${JavaModName}Trades {
 
 	public static void registerTrades() {
 		<#list villagertrades as trade>
-			<#list trade.tradeEntries as tradeEntry>
-				<#assign lv1 = []>
-				<#assign lv2 = []>
-				<#assign lv3 = []>
-				<#assign lv4 = []>
-				<#assign lv5 = []>
-				
-				<#list tradeEntry.entries as entry>
-					<#if entry.level == 1>
-						<#assign lv1 += [entry]>
-					<#elseif entry.level == 2>
-						<#assign lv2 += [entry]>
-					<#elseif entry.level == 3>
-						<#assign lv3 += [entry]>
-					<#elseif entry.level == 4>
-						<#assign lv4 += [entry]>
-					<#elseif entry.level == 5>
-						<#assign lv5 += [entry]>
-					</#if>
-				</#list>
-				
-				<@trades lv1, 1, tradeEntry.villagerProfession/>
-				<@trades lv2, 2, tradeEntry.villagerProfession/>
-				<@trades lv3, 3, tradeEntry.villagerProfession/>
-				<@trades lv4, 4, tradeEntry.villagerProfession/>
-				<@trades lv5, 5, tradeEntry.villagerProfession/>
+			<#assign lv1 = []>
+			<#assign lv2 = []>
+			<#assign lv3 = []>
+			<#assign lv4 = []>
+			<#assign lv5 = []>
+			<#list trade.trades as entry>
+				<#if entry.level == 1>
+					<#assign lv1 += [entry]>
+				<#elseif entry.level == 2>
+					<#assign lv2 += [entry]>
+				<#elseif entry.level == 3>
+					<#assign lv3 += [entry]>
+				<#elseif entry.level == 4>
+					<#assign lv4 += [entry]>
+				<#elseif entry.level == 5>
+					<#assign lv5 += [entry]>
+				</#if>
 			</#list>
+			<@trades lv1, 1, trade.villagerProfession/>
+			<@trades lv2, 2, trade.villagerProfession/>
+			<@trades lv3, 3, trade.villagerProfession/>
+			<@trades lv4, 4, trade.villagerProfession/>
+			<@trades lv5, 5, trade.villagerProfession/>
 		</#list>
 	}
 

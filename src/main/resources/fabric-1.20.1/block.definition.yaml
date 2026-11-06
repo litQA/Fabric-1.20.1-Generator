@@ -551,3 +551,4 @@ base_types:
     condition: generateFeature
   - type: blockentity
     condition: hasInventory
+

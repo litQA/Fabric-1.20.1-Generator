@@ -76,16 +76,29 @@ if (-not (Test-Path -LiteralPath $workspaceFile)) {
 }
 
 $smokeRoot = Join-Path $workspaceRoot 'caches\smoke'
-$pluginFolder = Join-Path $smokeRoot 'plugins'
+$workDir = Join-Path $smokeRoot 'workdir'
+$workPlugins = Join-Path $workDir 'plugins'
 $mcreatorHome = Join-Path $smokeRoot 'mcreator-home'
+$emptyPlugins = Join-Path $smokeRoot 'empty-plugins'
 $tmpFolder = Join-Path $smokeRoot 'tmp'
-if (Test-Path -LiteralPath $pluginFolder) {
-    Remove-Item -LiteralPath $pluginFolder -Recurse -Force
+if (Test-Path -LiteralPath $workDir) {
+    Remove-Item -LiteralPath $workDir -Recurse -Force
 }
-New-Item -ItemType Directory -Path $pluginFolder -Force | Out-Null
+New-Item -ItemType Directory -Path $workPlugins -Force | Out-Null
 New-Item -ItemType Directory -Path $mcreatorHome -Force | Out-Null
+New-Item -ItemType Directory -Path $emptyPlugins -Force | Out-Null
 New-Item -ItemType Directory -Path $tmpFolder -Force | Out-Null
-Copy-Item -LiteralPath $PluginZip -Destination (Join-Path $pluginFolder (Split-Path -Leaf $PluginZip))
+
+# Copy only the MCreator platform plugins needed by the harness. Do not copy
+# other generator plugins: an installed 1.21.x generator could provide the same
+# common.*.yaml base-type definitions and shadow the 1.20.1 definitions.
+foreach ($platformPlugin in @('mcreator-core.zip', 'mcreator-localization.zip', 'mcreator-themes.zip', 'mcreator-link.zip', 'forge-config-api-port.zip')) {
+    $source = Join-Path $MCreatorPath "plugins\$platformPlugin"
+    if (Test-Path -LiteralPath $source) {
+        Copy-Item -LiteralPath $source -Destination $workPlugins
+    }
+}
+Copy-Item -LiteralPath $PluginZip -Destination (Join-Path $workPlugins (Split-Path -Leaf $PluginZip))
 
 $java = Join-Path $MCreatorPath 'jdk\bin\java.exe'
 if (-not (Test-Path -LiteralPath $java)) {
@@ -98,7 +111,7 @@ if (-not (Test-Path -LiteralPath $java)) {
 $classpath = "$HarnessDir;$AppDir;$(Join-Path $MCreatorPath 'lib\*')"
 
 $env:JAVA_TOOL_OPTIONS = "-Djna.tmpdir=$tmpFolder -Djava.io.tmpdir=$tmpFolder"
-$env:MCREATOR_PLUGINS_FOLDER = $pluginFolder
+$env:MCREATOR_PLUGINS_FOLDER = $emptyPlugins
 $env:MCREATOR_HOME = $mcreatorHome
 if (Test-Path -LiteralPath $GradleCacheJson) {
     $env:GEN_GRADLE_CACHE_JSON = $GradleCacheJson
@@ -108,7 +121,7 @@ Write-Host "[smoke-test] workspace: $workspaceFile"
 Write-Host "[smoke-test] plugin: $PluginZip"
 Write-Host "[smoke-test] MCreator: $MCreatorPath"
 
-Push-Location $MCreatorPath
+Push-Location $workDir
 try {
     & $java --add-opens java.base/java.lang=ALL-UNNAMED --enable-native-access=ALL-UNNAMED `
         -cp $classpath GenHarness $workspaceFile load

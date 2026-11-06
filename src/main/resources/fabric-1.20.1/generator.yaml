@@ -90,6 +90,13 @@ base_templates:
     writer: file
     name: "@RESROOT/@modid.mixins.json"
 
+  - template: block/fence_tag.json.ftl
+    writer: json
+    name: "@RESROOT/data/minecraft/tags/blocks/fences.json"
+  - template: block/wall_tag.json.ftl
+    writer: json
+    name: "@RESROOT/data/minecraft/tags/blocks/walls.json"
+
 sources_setup_tasks:
   - task: copy_models
     type: JAVA_viatemplate

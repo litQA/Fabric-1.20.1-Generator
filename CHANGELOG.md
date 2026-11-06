@@ -1,3 +1,20 @@
+# [2026.3-4.0.0.20-beta] - 2026-11-07
+
+## Changes
+- Fence and wall block tags are generated as base templates, so adjacent blocks of the same custom fence or wall connect correctly.
+- Generated mixin callbacks no longer print `[MixinProbe]` lines to the game console.
+- The headless smoke test now uses an isolated plugin directory, so an installed older build cannot shadow the build under test.
+
+## Fixes
+Fixed 7 bug(s).
+- Block inventory procedure blocks referenced the removed `customBlockIndex` template variable and failed to generate.
+- Bone meal methods used pre-1.20.1 parameter types, so blocks implementing `BonemealableBlock` did not compile.
+- The potion registry helper returned `Item` instead of `Potion`.
+- Villager trade generation used the 1.21.x nested `tradeEntries` model instead of the 1.20.1 flat `trades` model.
+- The `actionresulttype` local variable type had no local scope definition.
+- Custom fence and wall blocks were not added to the vanilla `fences` and `walls` tags.
+- The generated mixin callbacks spammed the console with probe messages.
+
 # [2026.3-4.0.0.3-beta] - 2026-11-07
 
 ## New Content
