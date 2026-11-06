@@ -1,3 +1,19 @@
+# [2026.3-4.0.0.21-beta] - 2026-11-07
+
+## Changes
+- Custom fluid buckets now use the Fabric `item/generated` model and fall back to the vanilla bucket texture when no bucket texture is provided.
+- Advancement item predicates now use the 1.20.1 array form.
+
+## Fixes
+Fixed 2 bug(s).
+- Fluid bucket models still used the Forge fluid-container model, so the bucket item had no valid Fabric model.
+- Advancement item predicates emitted a string instead of an item array and were rejected by the 1.20.1 advancement loader.
+
+## Known Limitations
+- Custom Java armor models are not implemented by the 1.20.1 armor generator yet.
+- The Forge Config API Port must be enabled in the workspace external APIs page before a `config` element can build.
+- Stale `deleted_mod_element` tag entries and Forge attribute warnings originate from the workspace or run environment, not from this generator.
+
 # [2026.3-4.0.0.20-beta] - 2026-11-07
 
 ## Changes

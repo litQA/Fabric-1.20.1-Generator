@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.0.20-beta`
+- 当前版本：`2026.3-4.0.0.21-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -70,6 +70,23 @@
 - **MixinProbe**：`procedure_mixin.java.ftl` 中 30 处 `[MixinProbe]` 控制台输出已全部移除；生成的 mixin 中不再出现该字符串。
 
 > **测试隔离教训**：`MCreatorEAP2026344621/plugins/` 中残留的旧 `generator-fabric-1.20.1.zip`（`.3`）会先于 `MCREATOR_PLUGINS_FOLDER` 被加载，导致 harness 实际测试旧插件。`tools/smoke-test.ps1` 已改为在 `caches/smoke/workdir/` 中只放 `mcreator-core`、localization、themes、link、forge-config-api-port 和被测插件，避免旧插件或其他生成器（尤其是 1.21.x 的 `common.*.yaml`）污染测试。
+
+## 2026.3-4.0.0.21-beta 追加修复
+
+- **自定义流体桶**：
+  - 根因：主生成器没有覆盖 `json/bucket.json.ftl`，1.20.1 的 fluid bucket 继续使用 Forge 的 `forge:fluid_container` / `forge:item/bucket_drip` 模型，Fabric 无法解析。
+  - 修复：新增 Fabric 版 `templates/json/bucket.json.ftl`，使用 `item/generated`；有 `textureBucket` 时用指定纹理，留空时回退到 `minecraft:item/bucket`。
+  - 回归：新建 2026.3 fluid fixture（`generateBucket=true`、`textureBucket` 为空）生成 `TestFluidItem` 和 `test_fluid_bucket.json`，模型为合法 Fabric `item/generated`。
+- **Advancement item predicate**：
+  - 根因：`jsontriggers/_mcitem.json.ftl` 输出 `"items": "id"`；1.20.1 需要 `"items": ["id"]`。
+  - 修复：改为数组形式。
+  - 回归：bettermelon 的 `unsweet_melon_drinks.json` 已输出 `"items": ["qa_better_melon:unripe_melon_drinks"]`；`javac` 458 源文件 / 0 错误 / 405 class。
+- **运行时日志评估**：
+  - `Couldn't load tag ... deleted_mod_element`：工作区问题。工作区里仍有已删除元素的旧 tag 引用，需要清理对应 tag 或重新生成 tag。
+  - `Ignoring unknown attribute 'forge:entity_gravity'` / `forge:step_height_addition`：生成代码中没有这些字符串；属于运行环境/其他 mod 的 Forge 属性注册，不是本生成器输出。
+  - `Parsing error loading custom advancement ... Expected items to be a JsonArray`：生成器问题，已在 `.21` 修复。
+  - 自定义 Java 模型头盔：**生成器能力缺口**。1.20.1 armor 生成器没有实现 `helmetModelName` / `helmetModelPart` / `helmetModelTexture` 等自定义 Java 模型渲染；当前 `armor.definition.yaml` 的 `field_exclusions` 还是旧字段名，字段会在 UI 中显示但模板忽略。该功能需要单独的 armor client/renderer 实现，列入后续批次。
+- **Forge Config API**：`config` 元素依赖外部 API；MCreator 要求用户在 Workspace Settings 的 External APIs 页面勾选 `forgeconfigapiport`，否则构建失败。这是插件/工作区的使用要求，不是生成器模板错误；已记录到 Known Limitations。
 
 ## 已知问题 / 下一阶段
 
