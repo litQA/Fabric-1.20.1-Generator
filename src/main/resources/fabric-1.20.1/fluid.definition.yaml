@@ -3,7 +3,7 @@ templates:
     name: "@SRCROOT/@BASEPACKAGEPATH/fluid/@NAMEFluid.java"
   - template: fluid/fluidblock.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/block/@NAMEBlock.java"
-  - template: fluid/fluidbucket.java.ftl
+  - template: fluid/fabric_fluidbucket.java.ftl
     condition: generateBucket
     name: "@SRCROOT/@BASEPACKAGEPATH/item/@NAMEItem.java"
   - template: json/bucket.json.ftl

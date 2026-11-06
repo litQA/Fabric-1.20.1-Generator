@@ -15,6 +15,7 @@
 #>
 [CmdletBinding()]
 param(
+    [switch] $NewDelivery,
     [string[]] $GradleArgs = @()
 )
 
@@ -60,11 +61,15 @@ if (Test-Path -LiteralPath $buildNumberFile) {
     $currentBuild = [int64](Get-Content -LiteralPath $buildNumberFile -Raw).Trim()
 }
 $nextBuild = $currentBuild + 1
+$nextPatch = [int]$match.Groups['patch'].Value
+if ($NewDelivery) {
+    $nextPatch++
+}
 $nextVersion = '{0}-{1}.{2}.{3}.{4}{5}' -f `
     $match.Groups['major'].Value,
     $match.Groups['majorVersion'].Value,
     $match.Groups['minorVersion'].Value,
-    $match.Groups['patch'].Value,
+    $nextPatch,
     $nextBuild,
     $match.Groups['suffix'].Value
 
@@ -82,6 +87,9 @@ Set-Content -LiteralPath $gradleProperties -Value $updated -Encoding ascii
 Set-Content -LiteralPath $buildNumberFile -Value $nextBuild -Encoding ascii
 
 Write-Host "[build-plugin] MCreator plugin version: $nextVersion"
+if ($NewDelivery) {
+    Write-Host "[build-plugin] Delivery patch bumped: $($match.Groups['patch'].Value) -> $nextPatch"
+}
 Write-Host "[build-plugin] JAVA_HOME: $env:JAVA_HOME"
 Write-Host "[build-plugin] GRADLE_USER_HOME: $env:GRADLE_USER_HOME"
 

@@ -1,4 +1,16 @@
-# [2026.3-4.0.0.21-beta] - 2026-11-07
+# [2026.3-4.0.4.24-beta] - 2026-11-07
+
+## Changes
+- Fluid bucket items now register themselves in every creative tab configured on the fluid element, including custom tabs.
+
+## Fixes
+Fixed 1 bug(s).
+- Fluid buckets were registered but never added to their configured creative tabs, so they were not visible in the creative inventory.
+
+## Known Limitations
+- Custom Java armor models are scheduled for P1.
+
+# [2026.3-4.0.3.21-beta] - 2026-11-07
 
 ## Changes
 - Custom fluid buckets now use the Fabric `item/generated` model and fall back to the vanilla bucket texture when no bucket texture is provided.

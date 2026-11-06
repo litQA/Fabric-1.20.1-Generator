@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.0.21-beta`
+- 当前版本：`2026.3-4.0.4.24-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -71,7 +71,16 @@
 
 > **测试隔离教训**：`MCreatorEAP2026344621/plugins/` 中残留的旧 `generator-fabric-1.20.1.zip`（`.3`）会先于 `MCREATOR_PLUGINS_FOLDER` 被加载，导致 harness 实际测试旧插件。`tools/smoke-test.ps1` 已改为在 `caches/smoke/workdir/` 中只放 `mcreator-core`、localization、themes、link、forge-config-api-port 和被测插件，避免旧插件或其他生成器（尤其是 1.21.x 的 `common.*.yaml`）污染测试。
 
-## 2026.3-4.0.0.21-beta 追加修复
+## 2026.3-4.0.4.24-beta 追加修复
+
+- **版本号规则**：上一轮交付的 `.21` 包按规范应为 `2026.3-4.0.3.21-beta`；本轮作为下一轮交付，使用 `2026.3-4.0.4.24-beta`。`tools/build-plugin.ps1 -NewDelivery` 会在新交付时把补丁号 +1，构建号继续递增。
+- **自定义流体桶未出现在创造模式物品栏**：
+  - 根因：bucket item 已经生成并注册，但 `fabric_fluidbucket.java.ftl` 没有把它加入流体配置的创造模式标签页；`tabMap` 的元素名匹配对 fluid bucket 也不可靠。
+  - 修复：模板直接遍历 `data.creativeTabs`，对 `CUSTOM:` 标签页注册 `ItemGroupEvents.modifyEntriesEvent(${JavaModName}Tabs.TAB_...)`，对原版标签页注册对应的 `CreativeModeTabs` 项。
+  - 回归：`SampleTab` + `TestFluidTab` fixture 生成 `TestFluidTabItem`，其中包含 `ItemGroupEvents.modifyEntriesEvent(TestmodModTabs.TAB_SAMPLETAB).register(...)`；`javac` 10 源文件 / 0 错误 / 12 class。
+- **P1 范围更新**：自定义 Java armor 模型纳入 P1。
+
+## 2026.3-4.0.3.21-beta 追加修复
 
 - **自定义流体桶**：
   - 根因：主生成器没有覆盖 `json/bucket.json.ftl`，1.20.1 的 fluid bucket 继续使用 Forge 的 `forge:fluid_container` / `forge:item/bucket_drip` 模型，Fabric 无法解析。
@@ -103,3 +112,4 @@
 3. 实现 `forceRedstoneConductor`、`hideTitle`、`dimension_void`。
 4. 验证 raytrace 新模式、vector cross、armor 耐久 0。
 5. 新建 2026.3 fixture，覆盖上述功能并 `javac` 通过。
+6. 实现 1.20.1 自定义 Java armor 模型（helmet/body/leggings/boots 的 model、renderer 与 model layer），补上 `helmetModelName` / `helmetModelPart` / `helmetModelTexture` 等字段。

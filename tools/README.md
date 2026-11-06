@@ -8,6 +8,12 @@
 pwsh -File .\tools\build-plugin.ps1
 ```
 
+交付新包时使用 `-NewDelivery`：补丁号 +1，构建序号仍按当前值 +1。
+
+```powershell
+pwsh -File .\tools\build-plugin.ps1 -NewDelivery
+```
+
 - 使用工作区根目录的 `jdk-25`（回退到 `MCreatorEAP2026344621/jdk`）。
 - 使用 `caches/gradle` 作为 `GRADLE_USER_HOME`。
 - 使用 `reference_resources/gradle-9.8.0-bin.zip` 作为 Gradle 发行包。
