@@ -103,6 +103,10 @@ public class ${name}Item extends Item {
             </#list>
         </#list>
 
+        <#if data.stayInGridWhenCrafting || (data.recipeRemainder?? && !data.recipeRemainder.isEmpty())>
+        ${JavaModName}CraftingRemainders.register(this, <#if data.recipeRemainder?? && !data.recipeRemainder.isEmpty()>${mappedMCItemToItem(data.recipeRemainder)}<#else>this</#if>);
+        </#if>
+
 	}
 
 	<#if data.hasNonDefaultAnimation()>
@@ -112,9 +116,7 @@ public class ${name}Item extends Item {
 	</#if>
 
 	<#--
-	 # Crafting remainders are not supported on Fabric 1.20.1: Item#getCraftingRemainingItem is final
-	 # and Item.Properties exposes no craftingRemainingItem setter. The item is consumed when crafted.
-	 # Restoring the behaviour requires an accessor mixin and is tracked as a known limitation.
+	 # Crafting remainders are implemented through the CraftingRemainderMixin.
 	-->
 
 	<#if data.enchantability != 0>

@@ -118,6 +118,10 @@ public class ${name}Item extends ${data.toolType?replace("Spade", "Shovel")?repl
             </#list>
         </#list>
 
+        <#if data.stayInGridWhenCrafting>
+        ${JavaModName}CraftingRemainders.register(this, this);
+        </#if>
+
 	}
 
 	<#if data.toolType == "Shield" && data.repairItems?has_content>
@@ -325,6 +329,9 @@ public class ${name}Item extends FishingRodItem {
 			.fireResistant()
 			</#if>
 		);
+		<#if data.stayInGridWhenCrafting>
+		${JavaModName}CraftingRemainders.register(this, this);
+		</#if>
 	}
 
 	<#if data.repairItems?has_content>
@@ -386,9 +393,7 @@ public class ${name}Item extends FishingRodItem {
 
 <#macro commonMethods>
 	<#--
-	 # Crafting remainders are not supported on Fabric 1.20.1: Item#getCraftingRemainingItem is final
-	 # and Item.Properties exposes no craftingRemainingItem setter. The tool is consumed when crafted.
-	 # Restoring the behaviour requires an accessor mixin and is tracked as a known limitation.
+	 # Crafting remainders are implemented through the CraftingRemainderMixin.
 	-->
 
 	<@addSpecialInformation data.specialInformation/>

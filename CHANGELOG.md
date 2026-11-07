@@ -1,3 +1,19 @@
+# [2026.3-4.0.13.43-beta] - 2026-11-07
+
+## New Content
+- `entity_change_equipment` trigger through Fabric `ServerEntityEvents.EQUIPMENT_CHANGE`.
+- Item/recipe remainder support through a `CraftingRemainders` registry and `Item` mixin.
+  - Item `recipeRemainder` is returned as the crafting remainder.
+  - Item/tool `stayInGridWhenCrafting` returns the item itself as the remainder.
+
+## Changes
+- Item and tool constructors register their remainder at runtime; the `Item#getCraftingRemainingItem` / `hasCraftingRemainingItem` bridge is provided by a mixin.
+- P3 fixture generation covers the equipment trigger, item remainder, and tool remainder; `javac` passes with 18 source files and 23 classes.
+
+## Known Limitations
+- `damageOnCrafting` is not applied as durability damage in this batch; the item/tool still stays in the grid when configured.
+- Other P3 content is intentionally not developed in this batch.
+
 # [2026.3-4.0.12.41-beta] - 2026-11-07
 
 ## Fixes

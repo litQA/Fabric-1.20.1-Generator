@@ -92,6 +92,10 @@ base_templates:
 
   - template: modbase/triggersupport.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/trigger/@JavaModNameTriggers.java"
+  - template: modbase/craftingremainders.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameCraftingRemainders.java"
+  - template: mixins/craftingremaindermixin.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameCraftingRemainderMixin.java"
   - template: mixins/explosionmixin.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameExplosionMixin.java"
   - template: mixins/bucketfilledmixin.java.ftl

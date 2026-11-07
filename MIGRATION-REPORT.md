@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.12.41-beta`
+- 当前版本：`2026.3-4.0.13.43-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -142,6 +142,28 @@
 - **待真机确认**：
   - `bucket_filled` 的实际装填结果。
 
+## P3 限定批次（2026.3-4.0.13.43-beta）
+
+按用户要求，本轮只实现两个 P3 项，其他 P3 内容不开发。
+
+- **`entity_change_equipment`**：
+  - 使用 Fabric `ServerEntityEvents.EQUIPMENT_CHANGE`；该事件在 1.20.1 Fabric API 0.92.12 中可用。
+  - 依赖映射：`entity` / `world` / `x` / `y` / `z` / `equipmentslot`（`slot.getFilterFlag()`）/ `olditemstack` / `newitemstack`。
+  - 生成 procedure 构造器中注册事件；不新增 mixin。
+- **物品/工具 craftRemainder**：
+  - 新增 `CraftingRemainders` 注册表（`Map<Item, Item>`）和 `CraftingRemainderMixin`。
+  - Mixin 桥接 1.20.1 的 `Item#getCraftingRemainingItem()` 与 `hasCraftingRemainingItem()`。
+  - Item：`recipeRemainder` 非空时返回该物品；`stayInGridWhenCrafting` 且无 remainder 时返回自身。
+  - Tool：`stayInGridWhenCrafting` 时返回自身。
+  - 现有 1.20.1 Fabric 无 `ItemStack` 级 remainder 钩子；`damageOnCrafting` 的耐久扣减本轮不实现，物品仍留在合成格。
+- **验证**：
+  - `p3workspace`：equipment procedure、带 `recipeRemainder` 的 item、带 `stayInGrid` 的 tool 生成成功。
+  - `javac`：18 源文件 / 0 错误 / 23 class。
+  - 生成 `CraftingRemainders`、`CraftingRemainderMixin`，item 注册 `Items.BUCKET`，tool 注册自身。
+- **待真机确认**：
+  - `entity_change_equipment` 的触发时机与依赖值。
+  - 物品 `recipeRemainder` 与工具 `stayInGrid` 的合成结果。
+
 ## 已知问题 / 下一阶段
 
 - **旧工作区转换**：`test-workspace/b4e` 的 fluid 元素是旧 schema，2026.3 读取时报 `Field type of mod element DefaultFluid is null`。这不是生成器 YAML 问题，需要新建 2026.3 fluid fixture 或在后续阶段补 converter 兼容验证。
@@ -150,9 +172,8 @@
 - **其余触发器 / 2026.3 新功能**：按 P3–P5 批次推进，每批 `javac`/生成通过后停止等待真机验证。
 - 测试 harness 仍位于工作区 `_verify/`；P3 起逐步把必要的 smoke-test/verify 脚本迁入 `tools/`，重依赖继续使用 MCreator/Gradle 缓存。
 
-## 下一步（P3 / P4）
+## 下一步（P4）
 
-1. **真机验证 P1/P2**：自定义 armor 渲染/mixin、`attack_with_procedure` AI task、void dimension、13 个新过程块，以及 P2 四个 trigger。
-2. **P3**：处理其余 2026.3 功能与工作区转换问题（旧 fluid schema、其他 latent gaps）。
-3. **P4**：实现 1.20.1 的积木式附魔效果 Mixin 引擎与 enchantment value/effect modifiers。
-4. 动画与 synced data 动画/图层条件仍按用户决定隐藏或排除。
+1. **真机验证 P3 限定批次**：`entity_change_equipment`、item `recipeRemainder`、tool `stayInGridWhenCrafting`。
+2. **P4**：实现 1.20.1 的积木式附魔效果 Mixin 引擎与 enchantment value/effect modifiers。
+3. 其他 P3 内容按用户要求不开发；动画与 synced data 动画/图层条件继续隐藏或排除。
