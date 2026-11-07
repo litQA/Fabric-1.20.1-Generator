@@ -1,3 +1,15 @@
+# [2026.3-4.0.11.39-beta] - 2026-11-07
+
+## Fixes
+- `bucket_filled` now injects directly into `BucketItem#use` / `MilkBucketItem#use` at RETURN and reads the returned `InteractionResultHolder` stack. This avoids both the hand-slot check and the inner `ItemStack.use` redirect, and supplies the actual filled bucket as `itemstack`.
+
+## Changes
+- The `ServerPlayerGameMode` bucket mixin and its `@Redirect` were removed; the bucket mixin now targets only the bucket item classes.
+- P2 fixture re-verified with 18 source files and 19 classes.
+
+## Known Limitations
+- The direct bucket use mixin still needs real-machine confirmation.
+
 # [2026.3-4.0.10.37-beta] - 2026-11-07
 
 ## Fixes

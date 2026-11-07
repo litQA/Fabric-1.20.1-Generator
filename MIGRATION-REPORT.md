@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.10.37-beta`
+- 当前版本：`2026.3-4.0.11.39-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -117,12 +117,14 @@
   - bettermelon：469 源文件 / 0 错误 / 426 class；`MelonArmorArmor` 已注册 `Modelmelon_rind` 和 `rind_melon_default.png`。
   - 审计：无未豁免 Forge API 残留。
 
-## P2 完成（2026.3-4.0.10.37-beta）
+## P2 完成（2026.3-4.0.11.39-beta）
 
 - **`bucket_filled`**：
-  - `BucketFilledMixin` 使用 `@Redirect` 拦截 `ServerPlayerGameMode#useItem` 内部的 `ItemStack#use` 调用。
-  - 仅当原栈为空桶、返回结果为成功、结果栈是 `BucketItem` 或 `MilkBucketItem` 时，把**结果栈**写入 ThreadLocal；在 `useItem` 的 RETURN 触发 `BUCKET_FILLED`。
-  - 空桶右键空气、已装满桶倒出流体不会触发；`itemstack` 是装填后的结果；服务端触发。
+  - `BucketFilledMixin` 直接注入 `BucketItem#use` / `MilkBucketItem#use` 的 RETURN。
+  - RETURN 时读取 `player.getItemInHand(hand)`（调用方尚未回写手持槽，因此仍是空桶）和 `cir.getReturnValue()` 的结果栈。
+  - 仅当原手持物是空桶、结果成功、结果栈是 `BucketItem` 或 `MilkBucketItem` 时触发；`itemstack` 是装填后的结果。
+  - 不再使用 `ServerPlayerGameMode` 的 `@Redirect`，也不再依赖 `useItem` 回写手持槽。
+  - 空桶右键空气、已装满桶倒出流体不会触发；服务端触发。
 - **`explosion_occurs`**：
   - `ExplosionMixin` 注入 `Explosion#explode` 的 HEAD，使用 `@Shadow` 读取 `level/x/y/z` 并触发；服务端触发。
 - **`item_smelted`**：
