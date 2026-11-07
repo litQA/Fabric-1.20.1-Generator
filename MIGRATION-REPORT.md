@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.5.26-beta`
+- 当前版本：`2026.3-4.0.6.29-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -117,18 +117,38 @@
   - bettermelon：469 源文件 / 0 错误 / 426 class；`MelonArmorArmor` 已注册 `Modelmelon_rind` 和 `rind_melon_default.png`。
   - 审计：无未豁免 Forge API 残留。
 
+## P2 完成（2026.3-4.0.6.29-beta）
+
+- **`bucket_filled`**：使用 Fabric `UseItemCallback` 的构造器注册，检测手持 `Items.BUCKET` 后调用 procedure。
+- **`explosion_occurs`**：
+  - 新增 `trigger/${JavaModName}Triggers` 与 `ExplosionMixin`。
+  - `ExplosionMixin` 注入 `Explosion#explode` 的 HEAD，使用 `@Shadow` 读取 `level/x/y/z` 并触发。
+- **`item_smelted`**：
+  - `FurnaceResultSlotMixin` 注入 `FurnaceResultSlot#onTake` 的 RETURN，携带 `player` 与结果 `ItemStack`。
+- **`entity_switch_hand`**：
+  - `SwitchHandMixin` 注入 `LivingEntity#setItemInHand` 的 HEAD；当 hand 为 `OFF_HAND` 时携带主手/副手物品触发。
+- **注册与生成**：
+  - `modbase/triggersupport.java.ftl` 生成 3 组 listener 列表和 fire 方法。
+  - 三个 mixin 加入 `mixins.json`，并使用 `require = 0`。
+- **验证**：
+  - `p2workspace`：4 个 trigger procedure、`Triggers`、3 个 mixin 生成成功。
+  - `javac`：16 源文件 / 0 错误 / 16 class。
+  - 生成物包含 `P2BucketFilledProcedure`、`P2ExplosionOccursProcedure`、`P2ItemSmeltedProcedure`、`P2EntitySwitchHandProcedure`，以及 `TestmodModExplosionMixin` / `TestmodModFurnaceResultSlotMixin` / `TestmodModSwitchHandMixin`。
+- **待真机确认**：
+  - `bucket_filled` 的精确语义（当前按参考实现，在桶使用时触发；装填成功判定需真机确认）。
+  - 三个 mixin 的实际注入时机与客户端/服务端行为。
+
 ## 已知问题 / 下一阶段
 
 - **旧工作区转换**：`test-workspace/b4e` 的 fluid 元素是旧 schema，2026.3 读取时报 `Field type of mod element DefaultFluid is null`。这不是生成器 YAML 问题，需要新建 2026.3 fluid fixture 或在后续阶段补 converter 兼容验证。
 - **动画**：本轮明确不实现实体/物品动画；`animations` 与 synced data 条件后续按用户决定隐藏或排除。
 - **附魔引擎**：2026.2/2026.3 的积木式附魔效果是后续重点，计划在 P4 实现 1.20.1 的 Mixin 引擎。
-- **其余触发器 / 2026.3 新功能**：按 P2–P5 批次推进，每批 `javac`/生成通过后停止等待真机验证。
-- 测试 harness 仍位于工作区 `_verify/`；P2 起逐步把必要的 smoke-test/verify 脚本迁入 `tools/`，重依赖继续使用 MCreator/Gradle 缓存。
+- **其余触发器 / 2026.3 新功能**：按 P3–P5 批次推进，每批 `javac`/生成通过后停止等待真机验证。
+- 测试 harness 仍位于工作区 `_verify/`；P3 起逐步把必要的 smoke-test/verify 脚本迁入 `tools/`，重依赖继续使用 MCreator/Gradle 缓存。
 
-## 下一步（P2 / P3 / P4）
+## 下一步（P3 / P4）
 
-1. **真机验证 P1**：重点验证自定义 armor 模型的渲染/mixin、`attack_with_procedure` AI task、void dimension 和 13 个新过程块。
-2. **P2**：补齐剩余 Hard triggers（`bucket_filled`、`explosion_occurs`、`item_smelted`、`entity_switch_hand`），逐个真机验证。
-3. **P3**：处理其余 2026.3 功能与工作区转换问题（旧 fluid schema、其他 latent gaps）。
-4. **P4**：实现 1.20.1 的积木式附魔效果 Mixin 引擎与 enchantment value/effect modifiers。
-5. 动画与 synced data 动画/图层条件仍按用户决定隐藏或排除。
+1. **真机验证 P1/P2**：自定义 armor 渲染/mixin、`attack_with_procedure` AI task、void dimension、13 个新过程块，以及 P2 四个 trigger。
+2. **P3**：处理其余 2026.3 功能与工作区转换问题（旧 fluid schema、其他 latent gaps）。
+3. **P4**：实现 1.20.1 的积木式附魔效果 Mixin 引擎与 enchantment value/effect modifiers。
+4. 动画与 synced data 动画/图层条件仍按用户决定隐藏或排除。

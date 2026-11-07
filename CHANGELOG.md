@@ -1,3 +1,20 @@
+# [2026.3-4.0.6.29-beta] - 2026-11-07
+
+## New Content
+- `bucket_filled` global trigger via Fabric `UseItemCallback`.
+- `explosion_occurs` global trigger with an `Explosion` mixin.
+- `item_smelted` global trigger with a `FurnaceResultSlot` mixin.
+- `entity_switch_hand` global trigger with a `LivingEntity#setItemInHand` mixin.
+- A generated trigger registry and three global trigger mixins.
+
+## Changes
+- P2 fixture generation covers all four triggers; `javac` passes with 16 source files and 16 classes.
+- The trigger mixins are listed in the generated `mixins.json` and have `require = 0` so a missing target does not crash startup.
+
+## Known Limitations
+- `bucket_filled` follows the 1.21.x `UseItemCallback` approach and fires on bucket use; exact fill-result semantics still need real-machine confirmation.
+- The new trigger mixins and the custom armor mixin need real-machine client/server verification.
+
 # [2026.3-4.0.5.26-beta] - 2026-11-07
 
 ## New Content
