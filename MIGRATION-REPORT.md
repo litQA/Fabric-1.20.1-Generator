@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.13.43-beta`
+- 当前版本：`2026.3-4.0.14.46-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -164,16 +164,38 @@
   - `entity_change_equipment` 的触发时机与依赖值。
   - 物品 `recipeRemainder` 与工具 `stayInGrid` 的合成结果。
 
+## P4：2026.3 附魔效果引擎（2026.3-4.0.14.46-beta）
+
+- **生成基础**：
+  - 将 2026.3 的完整 `enchantmenteffects` JSON 模板引入 1.20.1 base datapack。
+  - `Enchantment` 模板生成 `EFFECTS_JSON` 并注册到运行时引擎。
+- **运行时引擎**：
+  - `EnchantmentEffects` 解析 effect JSON。
+  - 支持 `minecraft:damage`、`minecraft:knockback`、`minecraft:armor_effectiveness`、`minecraft:attributes`、`minecraft:mob_experience`、`minecraft:block_experience`、`minecraft:prevent_armor_change`、`minecraft:prevent_equipment_drop`。
+  - 支持 `add` / `multiply` / `set` / `all_of`，以及 `linear` / `clamped` / `fraction` / `levels_squared` / `lookup`。
+- **Mixin 桥接**：
+  - `EnchantmentHelperMixin`：伤害、击退、护甲有效性、绑定诅咒、消失诅咒。
+  - `ItemStackAttributeMixin`：把附魔属性效果加入物品属性。
+  - 经验效果通过 `ServerLivingEntityEvents.AFTER_DEATH` 和 `PlayerBlockBreakEvents.AFTER` 发放。
+- **1.20.1 属性映射**：
+  - `ARMOR` → `minecraft:generic.armor`，`MAX_HEALTH` → `minecraft:generic.max_health` 等；特殊项 `SPAWN_REINFORCEMENTS_CHANCE` / `JUMP_STRENGTH` 单独映射。
+- **验证**：
+  - `p4workspace`：带 damage/knockback/armor/attributes/curse 的 enchantment 生成成功。
+  - effect JSON 已生成，属性为 `minecraft:generic.armor`。
+  - `javac`：15 源文件 / 0 错误 / 20 class。
+- **待真机确认**：
+  - 伤害/击退/护甲减伤/属性/经验/诅咒的实际数值与触发。
+
 ## 已知问题 / 下一阶段
 
 - **旧工作区转换**：`test-workspace/b4e` 的 fluid 元素是旧 schema，2026.3 读取时报 `Field type of mod element DefaultFluid is null`。这不是生成器 YAML 问题，需要新建 2026.3 fluid fixture 或在后续阶段补 converter 兼容验证。
 - **动画**：本轮明确不实现实体/物品动画；`animations` 与 synced data 条件后续按用户决定隐藏或排除。
-- **附魔引擎**：2026.2/2026.3 的积木式附魔效果是后续重点，计划在 P4 实现 1.20.1 的 Mixin 引擎。
-- **其余触发器 / 2026.3 新功能**：按 P3–P5 批次推进，每批 `javac`/生成通过后停止等待真机验证。
-- 测试 harness 仍位于工作区 `_verify/`；P3 起逐步把必要的 smoke-test/verify 脚本迁入 `tools/`，重依赖继续使用 MCreator/Gradle 缓存。
+- **附魔引擎**：2026.3 的附魔效果 JSON 引擎已在 P4 实现；仍需真机验证伤害/击退/护甲/属性/经验/诅咒。
+- **其余触发器 / 2026.3 新功能**：按 P5 及后续批次推进，每批 `javac`/生成通过后停止等待真机验证。
+- 测试 harness 仍位于工作区 `_verify/`；P5 起逐步把必要的 smoke-test/verify 脚本迁入 `tools/`，重依赖继续使用 MCreator/Gradle 缓存。
 
-## 下一步（P4）
+## 下一步（真机验证 / P5）
 
 1. **真机验证 P3 限定批次**：`entity_change_equipment`、item `recipeRemainder`、tool `stayInGridWhenCrafting`。
-2. **P4**：实现 1.20.1 的积木式附魔效果 Mixin 引擎与 enchantment value/effect modifiers。
-3. 其他 P3 内容按用户要求不开发；动画与 synced data 动画/图层条件继续隐藏或排除。
+2. **真机验证 P4**：damage / knockback / armor effectiveness / attributes / mob/block experience / binding/vanishing curses。
+3. **P5**：处理剩余 2026.3 功能与 deferred 项；其他 P3 内容按用户要求不开发，动画与 synced data 动画/图层条件继续隐藏或排除。

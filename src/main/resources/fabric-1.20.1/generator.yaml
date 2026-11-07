@@ -94,6 +94,12 @@ base_templates:
     name: "@SRCROOT/@BASEPACKAGEPATH/trigger/@JavaModNameTriggers.java"
   - template: modbase/craftingremainders.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameCraftingRemainders.java"
+  - template: modbase/enchantmenteffects.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameEnchantmentEffects.java"
+  - template: mixins/enchantmenthelpermixin.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameEnchantmentHelperMixin.java"
+  - template: mixins/itemstackattributemixin.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameItemStackAttributeMixin.java"
   - template: mixins/craftingremaindermixin.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameCraftingRemainderMixin.java"
   - template: mixins/explosionmixin.java.ftl

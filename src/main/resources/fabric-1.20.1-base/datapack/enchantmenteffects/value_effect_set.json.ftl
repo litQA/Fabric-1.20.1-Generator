@@ -1,1 +1,4 @@
-${input$value}
+{
+  "type": "minecraft:set",
+  "value": ${input$value}
+}

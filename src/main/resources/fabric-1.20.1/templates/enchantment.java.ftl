@@ -44,9 +44,20 @@ package ${package}.enchantment;
 
 public class ${name}Enchantment extends Enchantment {
 
+	<#if effectcode?has_content>
+	private static final String EFFECTS_JSON = """
+	{
+	${effectcode?remove_ending(",")}
+	}
+	""";
+	<#else>
+	private static final String EFFECTS_JSON = "{}";
+	</#if>
+
 	public ${name}Enchantment() {
 		super(Enchantment.Rarity.<@weightToRarity data.weight/>, EnchantmentCategory.BREAKABLE,
 				new EquipmentSlot[]{<@equipmentSlots data.supportedSlots.getUnmappedValue()/>});
+		${JavaModName}EnchantmentEffects.register(this, EFFECTS_JSON);
 	}
 
 	@Override public boolean canEnchant(ItemStack stack) {

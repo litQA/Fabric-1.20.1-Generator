@@ -1,6 +1,6 @@
 <#assign mixins = []>
 <#assign clientMixins = []>
-<#assign mixins += ["${JavaModName}ExplosionMixin", "${JavaModName}BucketFilledMixin", "${JavaModName}FurnaceResultSlotMixin", "${JavaModName}SwitchHandMixin", "${JavaModName}PlayerActionMixin", "${JavaModName}CraftingRemainderMixin"]>
+<#assign mixins += ["${JavaModName}ExplosionMixin", "${JavaModName}BucketFilledMixin", "${JavaModName}FurnaceResultSlotMixin", "${JavaModName}SwitchHandMixin", "${JavaModName}PlayerActionMixin", "${JavaModName}CraftingRemainderMixin", "${JavaModName}EnchantmentHelperMixin", "${JavaModName}ItemStackAttributeMixin"]>
 <#if w.hasElementsOfBaseType("item")>
   <#assign mixins += ["${JavaModName}RepairItemRecipeMixin"]>
 </#if>

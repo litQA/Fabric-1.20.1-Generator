@@ -1,1 +1,1 @@
-<#-- Dummy block -->
+"minecraft:prevent_equipment_drop": {},

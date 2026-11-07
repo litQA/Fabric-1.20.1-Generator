@@ -1,1 +1,4 @@
-event.getDroppedExperience() + ${input$value}
+{
+  "type": "minecraft:add",
+  "value": ${input$value}
+}

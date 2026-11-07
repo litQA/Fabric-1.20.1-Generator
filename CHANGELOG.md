@@ -1,3 +1,24 @@
+# [2026.3-4.0.14.46-beta] - 2026-11-07
+
+## New Content
+- Full 2026.3 enchantment effect JSON generation for 1.20.1, including effect components, value effects, level-based values, lookups, and attribute effects.
+- Runtime `EnchantmentEffects` engine with:
+  - `minecraft:damage`, `minecraft:knockback`, and `minecraft:armor_effectiveness` hooks.
+  - `minecraft:attributes` item attribute modifiers.
+  - `minecraft:mob_experience` and `minecraft:block_experience` hooks.
+  - `minecraft:prevent_armor_change` and `minecraft:prevent_equipment_drop` curse hooks.
+- `EnchantmentHelper` and `ItemStack` attribute mixins.
+
+## Changes
+- Enchantment classes now embed their generated effect JSON and register it with the runtime engine.
+- The 1.20.1 attribute effect template maps standard datalist keys to the 1.20.1 attribute registry IDs.
+- P4 fixture generation passes `javac` with 15 source files and 20 classes.
+
+## Known Limitations
+- Effect condition predicates beyond `predicate_true` are not evaluated yet.
+- The legacy `damageModifier` field remains separate from the new effect components.
+- The full enchantment engine still needs real-machine verification.
+
 # [2026.3-4.0.13.43-beta] - 2026-11-07
 
 ## New Content

@@ -1,1 +1,4 @@
-event.getDroppedExperience() * ${input$factor}
+{
+  "type": "minecraft:multiply",
+  "factor": ${input$factor}
+}

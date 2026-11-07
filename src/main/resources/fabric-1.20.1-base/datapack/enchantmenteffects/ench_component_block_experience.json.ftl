@@ -1,1 +1,3 @@
-${statement$conditionalEffect?replace("getDroppedExperience", "getExpToDrop")?replace("setDroppedExperience", "setExpToDrop")}
+"minecraft:block_experience": [
+  ${statement$conditionalEffect?remove_ending(",")}
+],

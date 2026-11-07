@@ -1,1 +1,3 @@
-${statement$conditionalEffect}
+"minecraft:mob_experience": [
+  ${statement$conditionalEffect?remove_ending(",")}
+],

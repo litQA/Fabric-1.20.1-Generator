@@ -1,1 +1,1 @@
-<#-- Dummy block -->
+"minecraft:prevent_armor_change": {},
