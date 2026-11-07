@@ -1,3 +1,15 @@
+# [2026.3-4.0.10.37-beta] - 2026-11-07
+
+## Fixes
+- `bucket_filled` now redirects the `ItemStack.use` call inside `ServerPlayerGameMode#useItem`, captures the actual `InteractionResultHolder` result stack, and fires only for a successful empty-bucket fill. This removes the dependence on the player's hand state at RETURN and guarantees that `itemstack` is the filled bucket.
+
+## Changes
+- `entity_switch_hand` was confirmed working on the real client through the `PlayerActionMixin` RETURN injection.
+- P2 fixture re-verified with 18 source files and 19 classes.
+
+## Known Limitations
+- The `bucket_filled` redirect still needs real-machine confirmation.
+
 # [2026.3-4.0.9.35-beta] - 2026-11-07
 
 ## Fixes
