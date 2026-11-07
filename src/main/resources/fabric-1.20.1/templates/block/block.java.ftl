@@ -180,7 +180,9 @@ public class ${name}Block extends
 			<#if data.emissiveRendering>
 				.hasPostProcess((bs, br, bp) -> true).emissiveRendering((bs, br, bp) -> true)
 			</#if>
-			<#if data.hasTransparency>
+			<#if data.forceRedstoneConductor>
+				.isRedstoneConductor((bs, br, bp) -> true)
+			<#elseif data.hasTransparency>
 				.isRedstoneConductor((bs, br, bp) -> false)
 			</#if>
 			<#if (data.boundingBoxes?? && !data.blockBase?? && !data.isFullCube() && data.offsetType != "NONE")

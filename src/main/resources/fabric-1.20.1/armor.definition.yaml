@@ -1,6 +1,8 @@
 templates:
   - template: armor.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/item/@NAMEItem.java"
+  - template: armor_client.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/client/renderer/item/@NAMEArmor.java"
 
   # Helmet item model
   - template: json/item.json.ftl
@@ -94,6 +96,12 @@ templates:
       - "bootsItemRenderType #= 1"
     name: "@MODASSETSROOT/models/item/@registryname_boots.json"
 
+global_templates:
+  - template: elementinits/armormodels.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameArmorModels.java"
+  - template: mixins/armorlayermixin.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameArmorLayerMixin.java"
+
 localizationkeys:
   - key: item.@modid.@registryname_helmet
     mapto: helmetName
@@ -104,9 +112,8 @@ localizationkeys:
   - key: item.@modid.@registryname_boots
     mapto: bootsName
 
-field_exclusions: [ helmetModel, helmetModelPart, helmetModelTexture, bodyModel, bodyModelPart, bodyModelTexture, armsModelPartL,
-                    armsModelPartR, leggingsModel, leggingsModelPartL, leggingsModelPartR, leggingsModelTexture, bootsModel,
-                    bootsModelPartL, bootsModelPartR, bootsModelTexture, helmetPiglinNeutral, bodyPiglinNeutral, leggingsPiglinNeutral, bootsPiglinNeutral ]
+field_exclusions: [ helmetPiglinNeutral, bodyPiglinNeutral, leggingsPiglinNeutral, bootsPiglinNeutral ]
 
 base_types:
   - item
+

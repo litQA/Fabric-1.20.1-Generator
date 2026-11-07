@@ -44,6 +44,7 @@ import net.fabricmc.api.Environment;
 		<#if w.hasElementsOfType("fluid")>${JavaModName}Fluids.clientLoad();</#if>
 		<#if w.hasElementsOfType("gui")>${JavaModName}Screens.load();</#if>
 		<#if w.hasJavaModels()>${JavaModName}Models.load();</#if>
+		<#if w.hasElementsOfType("armor")>${JavaModName}ArmorModels.clientLoad();</#if>
 		<#if w.hasElementsOfBaseType("entity")>${JavaModName}EntityRenderers.load();</#if>
 		<#-- variable sync: 1.20.1 Fabric raw channel receivers (client side only) -->
 		<#if w.hasVariablesOfScope("GLOBAL_WORLD")>

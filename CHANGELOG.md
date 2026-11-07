@@ -1,3 +1,21 @@
+# [2026.3-4.0.5.26-beta] - 2026-11-07
+
+## New Content
+- 2026.3 procedure blocks: entity attack cooldown/reset, force player attack, line of sight, invulnerable time get/set, is moving, item can be hurt by/can repair/is empty/piglin currency, vector dot/cross, and strong redstone power for a block face.
+- Custom attack AI task using a procedure with speed, range, interval, and optional can-use/can-continue conditions.
+- Block force-redstone-conduction, creative tab title hiding, and void dimension generation.
+- Custom Java armor models: client model registration, per-piece texture selection, and a `HumanoidArmorLayer` mixin.
+
+## Changes
+- Raytrace water/fall-damage-resetting modes, vector cross product, and armor durability 0 were verified against 1.20.1 APIs.
+- P1 fixture generation covers 18 elements and passes `javac` with 43 source files and 42 classes.
+- The bettermelon regression workspace passes generation and `javac` with 469 source files and 426 classes.
+
+## Known Limitations
+- The custom armor model renderer and mixin still need real-machine client verification.
+- The minimal void dimension fixture has no biomes; real dimensions need at least one configured biome.
+- Entity/item animations and the enchantment effect engine remain outside P1.
+
 # [2026.3-4.0.4.24-beta] - 2026-11-07
 
 ## Changes

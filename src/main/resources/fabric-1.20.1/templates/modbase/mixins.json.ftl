@@ -1,4 +1,5 @@
 <#assign mixins = []>
+<#assign clientMixins = []>
 <#if w.hasElementsOfBaseType("item")>
   <#assign mixins += ["${JavaModName}RepairItemRecipeMixin"]>
 </#if>
@@ -46,6 +47,9 @@
     </#if>
   </#if>
 </#list>
+<#if w.hasElementsOfType("armor")>
+  <#assign clientMixins += ["${JavaModName}ArmorLayerMixin"]>
+</#if>
 {
   "required": true,
   "minVersion": "0.8",
@@ -53,6 +57,11 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     <#list mixins as mixin>
+      "${mixin}"<#sep>,
+    </#list>
+  ],
+  "client": [
+    <#list clientMixins as mixin>
       "${mixin}"<#sep>,
     </#list>
   ],

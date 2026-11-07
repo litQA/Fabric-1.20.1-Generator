@@ -38,6 +38,7 @@ public class ${JavaModName}Tabs {
 		<#list tabs as tab>
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TAB_${tab.getModElement().getName()?upper_case}, FabricItemGroup.builder()
 			.title(Component.translatable("item_group." + ${JavaModName}.MODID + ".${tab.getModElement().getRegistryName()}"))
+			<#if tab.hideTitle>.hideTitle()</#if>
 			.icon(()-> ${mappedMCItemToItemStackCode(tab.icon, 1)}).build());
 		</#list>
 	}

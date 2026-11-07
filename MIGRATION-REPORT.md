@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.4.24-beta`
+- 当前版本：`2026.3-4.0.5.26-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -94,22 +94,41 @@
   - `Couldn't load tag ... deleted_mod_element`：工作区问题。工作区里仍有已删除元素的旧 tag 引用，需要清理对应 tag 或重新生成 tag。
   - `Ignoring unknown attribute 'forge:entity_gravity'` / `forge:step_height_addition`：生成代码中没有这些字符串；属于运行环境/其他 mod 的 Forge 属性注册，不是本生成器输出。
   - `Parsing error loading custom advancement ... Expected items to be a JsonArray`：生成器问题，已在 `.21` 修复。
-  - 自定义 Java 模型头盔：**生成器能力缺口**。1.20.1 armor 生成器没有实现 `helmetModelName` / `helmetModelPart` / `helmetModelTexture` 等自定义 Java 模型渲染；当前 `armor.definition.yaml` 的 `field_exclusions` 还是旧字段名，字段会在 UI 中显示但模板忽略。该功能需要单独的 armor client/renderer 实现，列入后续批次。
+  - 自定义 Java 模型头盔：**生成器能力缺口**，已在 P1（`2026.3-4.0.5.26-beta`）补上 client 模型注册、纹理选择和 `HumanoidArmorLayer` mixin；真机渲染仍需验证。
 - **Forge Config API**：`config` 元素依赖外部 API；MCreator 要求用户在 Workspace Settings 的 External APIs 页面勾选 `forgeconfigapiport`，否则构建失败。这是插件/工作区的使用要求，不是生成器模板错误；已记录到 Known Limitations。
+
+## P1 完成（2026.3-4.0.5.26-beta）
+
+- **13 个 2026.3 procedure block**：`entity_attackcooldown`、`entity_attackcooldown_reset`、`entity_forceplayerattack`、`entity_has_line_of_sight`、`entity_invulnerabletime`、`entity_is_moving`、`entity_set_invulnerabletime`、`item_can_be_hurt_by`、`item_can_repair`、`item_is_empty`、`item_is_piglin_currency`、`vector_dot`、`world_data_get_emitted_strong_redstone_power`。
+  - 1.20.1 API 适配：`item_can_be_hurt_by` 使用 `Item.canBeHurtBy`，`item_can_repair` 使用 `Item.isValidRepairItem`，Piglin 货币使用 `ItemTags.PIGLIN_LOVED`。
+- **`vector_dual_ops`**：新增 `add` / `subtract` / `multiply` / `cross` 模板，覆盖 2026.3 的 cross product。
+- **`attack_with_procedure` AI task**：新增 `aitasks/attack_with_procedure.java.ftl`；fixture 生成的实体 AI 代码可调用 procedure，`javac` 通过。
+- **Block / Tab / Dimension**：
+  - `forceRedstoneConductor` → `.isRedstoneConductor((bs, br, bp) -> true)`。
+  - `hideTitle` → `FabricItemGroup.builder().hideTitle()`。
+  - `Void gen` → `dimension_void.json.ftl` + `void_noise_router.json.ftl`。
+- **Raytrace / armor durability**：1.20.1 `ClipContext.Block.FALLDAMAGE_RESETTING` 和 `ClipContext.Fluid.WATER` 已生成；`maxDamage=0` 时 `getDurabilityForType` 返回 0，物品不可损坏。
+- **自定义 Java armor 模型**：
+  - `armor_client.java.ftl` 生成每件 armor 的 `HumanoidModel` 注册；支持 helmet/body/leggings/boots 的自定义模型部件、`textures/entities/...` 自定义纹理，以及 `From armor` 回退。
+  - `elementinits/armormodels.java.ftl` 生成 `ARMOR_MODELS` 映射；`client.java.ftl` 调用 clientLoad。
+  - `armorlayermixin.java.ftl` 注入 `HumanoidArmorLayer#renderArmorPiece`（模型替换）和 `getArmorLocation`（纹理替换）；已用 `javap` 核对 1.20.1 目标签名。
+- **验证**：
+  - `p1workspace`：18 个元素生成成功，`javac` 43 源文件 / 0 错误 / 42 class。
+  - bettermelon：469 源文件 / 0 错误 / 426 class；`MelonArmorArmor` 已注册 `Modelmelon_rind` 和 `rind_melon_default.png`。
+  - 审计：无未豁免 Forge API 残留。
 
 ## 已知问题 / 下一阶段
 
 - **旧工作区转换**：`test-workspace/b4e` 的 fluid 元素是旧 schema，2026.3 读取时报 `Field type of mod element DefaultFluid is null`。这不是生成器 YAML 问题，需要新建 2026.3 fluid fixture 或在后续阶段补 converter 兼容验证。
 - **动画**：本轮明确不实现实体/物品动画；`animations` 与 synced data 条件后续按用户决定隐藏或排除。
 - **附魔引擎**：2026.2/2026.3 的积木式附魔效果是后续重点，计划在 P4 实现 1.20.1 的 Mixin 引擎。
-- **其余触发器 / 2026.3 新功能**：按 P1–P5 批次推进，每批 `javac`/生成通过后停止等待真机验证。
-- 测试 harness 仍位于工作区 `_verify/`；P1 起逐步把必要的 smoke-test/verify 脚本迁入 `tools/`，重依赖继续使用 MCreator/Gradle 缓存。
+- **其余触发器 / 2026.3 新功能**：按 P2–P5 批次推进，每批 `javac`/生成通过后停止等待真机验证。
+- 测试 harness 仍位于工作区 `_verify/`；P2 起逐步把必要的 smoke-test/verify 脚本迁入 `tools/`，重依赖继续使用 MCreator/Gradle 缓存。
 
-## 下一步（P1）
+## 下一步（P2 / P3 / P4）
 
-1. 添加 13 个 2026.3 procedure block 模板。
-2. 添加 `attack_with_procedure` AI task。
-3. 实现 `forceRedstoneConductor`、`hideTitle`、`dimension_void`。
-4. 验证 raytrace 新模式、vector cross、armor 耐久 0。
-5. 新建 2026.3 fixture，覆盖上述功能并 `javac` 通过。
-6. 实现 1.20.1 自定义 Java armor 模型（helmet/body/leggings/boots 的 model、renderer 与 model layer），补上 `helmetModelName` / `helmetModelPart` / `helmetModelTexture` 等字段。
+1. **真机验证 P1**：重点验证自定义 armor 模型的渲染/mixin、`attack_with_procedure` AI task、void dimension 和 13 个新过程块。
+2. **P2**：补齐剩余 Hard triggers（`bucket_filled`、`explosion_occurs`、`item_smelted`、`entity_switch_hand`），逐个真机验证。
+3. **P3**：处理其余 2026.3 功能与工作区转换问题（旧 fluid schema、其他 latent gaps）。
+4. **P4**：实现 1.20.1 的积木式附魔效果 Mixin 引擎与 enchantment value/effect modifiers。
+5. 动画与 synced data 动画/图层条件仍按用户决定隐藏或排除。
