@@ -1,3 +1,31 @@
+# [2026.3-4.0.19.57-beta] - 2026-11-07
+
+## New Content
+- Multipart block states:
+  - blockstate JSON now emits `multipart` blocks with per-state `when`/`apply` entries;
+  - custom blockstate properties and per-state models are supported;
+  - state-specific bounding boxes are emitted when defined.
+- Loot modifiers:
+  - loot table elements can use `lootTableToModify`;
+  - Fabric `LootTableEvents.REPLACE` merges the element's table into the target table;
+  - generated `LootTableHelper` merges pools while preserving the target's parameters/functions.
+- Raytrace procedure blocks:
+  - 1.20.1 `ClipContext.Block.FALLDAMAGE_RESETTING` and `ClipContext.Fluid.WATER` are supported through the existing raytrace templates;
+  - added the missing `entity_lookpos` procedure template.
+- Strong power emission:
+  - `world_data_get_emitted_strong_redstone_power` supports the direction/face input through `Level#getDirectSignal`.
+- Armor unbreakable at durability 0:
+  - armor with `maxDamage == 0` now overrides `canBeDepleted()` to return false.
+
+## Verification
+- P7 fixture with multipart block, loot modifier, raytrace (WATER + FALLDAMAGE_RESETTING), strong power, and unbreakable armor generated successfully.
+- Multipart JSON starts with `"multipart": [...]` and uses per-state models.
+- `javac`: 30 source files / 0 errors / 46 classes.
+
+## Known Limitations
+- Multipart collision is based on configured per-state/default bounding boxes; arbitrary union-of-parts collision is not inferred automatically.
+- Loot modifier behavior and armor unbreakability still need real-machine confirmation.
+
 # [2026.3-4.0.18.55-beta] - 2026-11-07
 
 ## New Content

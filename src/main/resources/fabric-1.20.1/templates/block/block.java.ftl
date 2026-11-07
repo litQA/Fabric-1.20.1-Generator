@@ -27,6 +27,7 @@
 <#assign tabMap = w.getCreativeTabMap()>
 <#assign filteredCustomProperties = ((data.customProperties)![])?filter(e ->
 	e.property().getName().startsWith("CUSTOM:") || generator.map(e.property().getName(), "blockstateproperties") != "")>
+<#assign statesWithCustomShape = data.getDefinedStatesWithCustomShape()>
 
 <#assign vanillaTabs = tabMap.keySet()?filter(e -> !e?starts_with('CUSTOM:'))>
 <#assign customTabs = tabMap.keySet()?filter(e -> e?starts_with('CUSTOM:'))>
@@ -332,13 +333,34 @@ public class ${name}Block extends
 	}
 	</#if>
 
-	<#if data.boundingBoxes?? && !data.blockBase?? && !data.isFullCube()>
+	<#if (data.boundingBoxes?? && !data.blockBase?? && !data.isFullCube()) || statesWithCustomShape?has_content>
 	@Override public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		<#if data.isBoundingBoxEmpty()>
-			return Shapes.empty();
+		<#if !data.disableOffset>Vec3 offset = state.getOffset(world, pos);</#if>
+		<#list statesWithCustomShape as stateEntry>
+			if (
+				<#if !stateEntry.stateMap?has_content>
+				true
+				<#else>
+				<#list stateEntry.stateMap.keySet() as property>
+					<#assign value = stateEntry.stateMap.get(property)>
+					<#if property.getClass().getSimpleName().equals("StringType")>
+						<#assign value = generator.map(property.getName(), "blockstateproperties", 2) + "." + value?upper_case>
+					</#if>
+					state.getValue(${property.getName().replace("CUSTOM:", "")?upper_case}) == ${value}<#sep>&&
+				</#list>
+				</#if>
+			) {
+				<@boundingBoxWithRotation stateEntry.positiveBoundingBoxes() stateEntry.negativeBoundingBoxes() data.disableOffset data.rotationMode data.enablePitch/>
+			}
+		</#list>
+		<#if data.boundingBoxes?? && !data.blockBase?? && !data.isFullCube()>
+			<#if data.isBoundingBoxEmpty()>
+				return Shapes.empty();
+			<#else>
+				<@boundingBoxWithRotation data.positiveBoundingBoxes() data.negativeBoundingBoxes() data.disableOffset data.rotationMode data.enablePitch/>
+			</#if>
 		<#else>
-			<#if !data.disableOffset>Vec3 offset = state.getOffset(world, pos);</#if>
-			<@boundingBoxWithRotation data.positiveBoundingBoxes() data.negativeBoundingBoxes() data.disableOffset data.rotationMode data.enablePitch/>
+			return super.getShape(state, world, pos, context);
 		</#if>
 	}
 	</#if>

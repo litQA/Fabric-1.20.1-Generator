@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.18.55-beta`
+- 当前版本：`2026.3-4.0.19.57-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -185,6 +185,35 @@
   - `javac`：15 源文件 / 0 错误 / 20 class。
 - **待真机确认**：
   - 伤害/击退/护甲减伤/属性/经验/诅咒的实际数值与触发。
+
+## P5：剩余 2026.3 功能（2026.3-4.0.19.57-beta）
+
+- **multipart block states**：
+  - `block_states.json.ftl` 支持 `multipart` 输出；
+  - 每个 defined state 生成 `when` + `apply`；
+  - 支持自定义 blockstate property；
+  - block Java 对带自定义形状的状态生成 `getShape` 分支。
+- **loot modifiers**：
+  - `lootTableToModify` 字段开放；
+  - 通过 Fabric `LootTableEvents.REPLACE` 合并目标表与元素表；
+  - `LootTableHelper` 保留目标表的 param set/random sequence/functions，并合并 pools；
+  - mod 初始化时调用 `LootModifiers.init()`。
+- **raytrace water / fall damage resetting**：
+  - 1.20.1 的 `ClipContext.Block.FALLDAMAGE_RESETTING` 与 `ClipContext.Fluid.WATER` 已支持；
+  - 补齐 `entity_lookpos` 模板。
+- **strong power emission**：
+  - `world_data_get_emitted_strong_redstone_power` 使用方向/面输入和 `Level#getDirectSignal`。
+- **armor unbreakable durability 0**：
+  - `maxDamage == 0` 时覆盖 `canBeDepleted()` 返回 false。
+- **验证**：
+  - multipart fixture 生成 `"multipart": [...]`，模型为 `_0`/`_1`；
+  - loot modifier、WATER + FALLDAMAGE_RESETTING raytrace、strong power、unbreakable armor 全部生成；
+  - P7 `javac`：30 源文件 / 0 错误 / 46 class。
+- **待真机确认**：
+  - multipart 实际渲染与碰撞；
+  - loot modifier 对目标掉落表的合并；
+  - 护甲是否完全不掉耐久；
+  - raytrace 新模式的命中行为。
 
 ## P4 完成：护甲有效性与全效果覆盖（2026.3-4.0.18.55-beta）
 

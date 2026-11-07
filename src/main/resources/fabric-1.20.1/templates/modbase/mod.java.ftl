@@ -50,6 +50,7 @@ public class ${JavaModName} implements ModInitializer {
 		<#if w.hasElementsOfType("tab")>${JavaModName}Tabs.load();</#if>
 		<#if w.hasElementsOfType("gamerule")>${JavaModName}GameRules.load();</#if>
 		<#if w.hasElementsOfType("enchantment")>${JavaModName}Enchantments.load();</#if>
+		<#if w.getGElementsOfType("loottable")?filter(e -> e.hasLootModifier())?size != 0>${JavaModName}LootModifiers.init();</#if>
 		<#if w.hasElementsOfType("attribute")>${JavaModName}Attributes.load();</#if>
 		<#if w.hasElementsOfType("bannerpattern")>${JavaModName}BannerPatterns.load();</#if>
 		<#if w.hasElementsOfType("potioneffect")>${JavaModName}MobEffects.load();</#if>

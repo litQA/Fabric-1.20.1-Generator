@@ -2,3 +2,15 @@ templates:
   - template: loottable.json.ftl # loaded from datapack generator
     writer: json
     name: "@RESROOT/data/@[getNamespace()]/loot_tables/@[getName()].json"
+
+global_templates:
+  - template: loottable/loot_table_helper.java.ftl
+    name: "@SRCROOT/net/minecraft/world/level/storage/loot/@JavaModNameLootTableHelper.java"
+    condition: "${loottables?filter(e -> e.hasLootModifier())?size != 0}"
+  - template: loottable/lootmodifiers.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameLootModifiers.java"
+    condition: "${loottables?filter(e -> e.hasLootModifier())?size != 0}"
+
+# Fabric implements loot table modification through LootTableEvents.REPLACE.
+# The element's own table is merged into the selected vanilla/modded table.
+field_exclusions: [ addLootModifier, lootModifierPriority, lootModifierConditions ]

@@ -106,6 +106,12 @@ public abstract class ${name}Item extends ArmorItem {
 		}, type, properties);
 	}
 
+	<#if data.maxDamage == 0>
+	@Override public boolean canBeDepleted() {
+		return false;
+	}
+	</#if>
+
 	<#if data.enableHelmet>
 		public static class Helmet extends ${name}Item {
 			public Helmet() {
