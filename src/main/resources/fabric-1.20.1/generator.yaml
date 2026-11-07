@@ -100,6 +100,8 @@ base_templates:
     name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameEnchantmentHelperMixin.java"
   - template: mixins/itemstackattributemixin.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameItemStackAttributeMixin.java"
+  - template: mixins/livingentitymixin.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameLivingEntityMixin.java"
   - template: mixins/craftingremaindermixin.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameCraftingRemainderMixin.java"
   - template: mixins/explosionmixin.java.ftl

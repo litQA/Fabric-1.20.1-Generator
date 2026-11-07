@@ -103,6 +103,14 @@ public class ${JavaModName}EnchantmentEffects {
 		return (float) list("minecraft:armor_effectiveness", enchantment, level);
 	}
 
+	public static float armorEffectiveness(Enchantment enchantment, int level, EquipmentSlot slot) {
+		EffectData data = EFFECTS.get(enchantment);
+		if (data == null || (slot != null && !data.slots().contains(slot))) {
+			return 0;
+		}
+		return armorEffectiveness(enchantment, level);
+	}
+
 	public static boolean hasBinding(Enchantment enchantment) {
 		return has("minecraft:prevent_armor_change", enchantment);
 	}

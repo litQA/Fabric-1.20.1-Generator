@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.17.53-beta`
+- 当前版本：`2026.3-4.0.18.55-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -185,6 +185,22 @@
   - `javac`：15 源文件 / 0 错误 / 20 class。
 - **待真机确认**：
   - 伤害/击退/护甲减伤/属性/经验/诅咒的实际数值与触发。
+
+## P4 完成：护甲有效性与全效果覆盖（2026.3-4.0.18.55-beta）
+
+- `minecraft:armor_effectiveness` 改为通过 `LivingEntity#getArmorValue` mixin 应用，按附魔支持槽位过滤，不再混入 `getDamageProtection`。
+- 全效果 fixture 覆盖：
+  - `armor_effectiveness`
+  - `mob_experience` / `block_experience`
+  - `damage` / `knockback`
+  - `attributes`
+  - `prevent_armor_change` / `prevent_equipment_drop`
+  - `linear` / `clamped` / `fraction` / `squared` 等级数值
+- 验证：
+  - 完整 effect JSON 通过解析；
+  - `LivingEntityMixin`、`EnchantmentHelperMixin` 正常生成；
+  - P6 `javac`：16 源文件 / 0 错误 / 22 class。
+- 待真机验证：护甲有效性、mob/block experience。
 
 ## P4 修复：附魔属性限定部位（2026.3-4.0.17.53-beta）
 

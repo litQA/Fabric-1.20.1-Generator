@@ -1,7 +1,6 @@
 <#-- @formatter:off -->
 package ${package}.mixins;
 
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.ItemStack;
@@ -35,17 +34,6 @@ public abstract class ${JavaModName}EnchantmentHelperMixin {
 		ItemStack stack = entity.getMainHandItem();
 		for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(stack).entrySet()) {
 			bonus += (int) ${JavaModName}EnchantmentEffects.knockback(entry.getKey(), entry.getValue());
-		}
-		cir.setReturnValue(bonus);
-	}
-
-	@Inject(method = "getDamageProtection", at = @At("RETURN"), cancellable = true, require = 0)
-	private static void getDamageProtection(Iterable<ItemStack> stacks, DamageSource source, CallbackInfoReturnable<Integer> cir) {
-		int bonus = cir.getReturnValue();
-		for (ItemStack stack : stacks) {
-			for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(stack).entrySet()) {
-				bonus += (int) ${JavaModName}EnchantmentEffects.armorEffectiveness(entry.getKey(), entry.getValue());
-			}
 		}
 		cir.setReturnValue(bonus);
 	}

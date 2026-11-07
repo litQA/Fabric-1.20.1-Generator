@@ -1,3 +1,24 @@
+# [2026.3-4.0.18.55-beta] - 2026-11-07
+
+## New Content
+- Enchantment `minecraft:armor_effectiveness` now applies through a `LivingEntity#getArmorValue` mixin, with slot filtering from the enchantment's supported slots.
+- Removed the old `EnchantmentHelper#getDamageProtection` approximation so armor effectiveness is not counted as protection points.
+- Full P4 effect fixture now covers:
+  - armor effectiveness;
+  - mob and block experience;
+  - damage and knockback;
+  - attributes;
+  - prevention curses;
+  - level-based linear/clamped/fraction/squared values.
+
+## Verification
+- The full fixture effect JSON parses correctly with all eight effect components.
+- `LivingEntityMixin` and `EnchantmentHelperMixin` generate and apply.
+- P6 fixture `javac`: 16 source files / 22 classes.
+
+## Known Limitations
+- Real-machine behavior of armor effectiveness and experience still needs confirmation.
+
 # [2026.3-4.0.17.53-beta] - 2026-11-07
 
 ## Fixes
