@@ -1,3 +1,15 @@
+# [2026.3-4.0.12.41-beta] - 2026-11-07
+
+## Fixes
+- `bucket_filled` no longer requires the hand slot to still contain the original empty bucket at RETURN. Some server paths replace the hand before the bucket item's `use` returns, which made that check fail. The mixin now classifies the call solely by the returned `InteractionResultHolder`: successful action, non-empty result stack, and result not an empty bucket.
+
+## Changes
+- The filled result stack is passed directly as the `itemstack` dependency.
+- P2 fixture re-verified with 18 source files and 19 classes.
+
+## Known Limitations
+- The result-only bucket check still needs real-machine confirmation.
+
 # [2026.3-4.0.11.39-beta] - 2026-11-07
 
 ## Fixes

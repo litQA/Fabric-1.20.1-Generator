@@ -27,9 +27,8 @@ public abstract class ${JavaModName}BucketFilledMixin {
 			return;
 		}
 
-		ItemStack original = player.getItemInHand(hand);
 		InteractionResultHolder<ItemStack> result = cir.getReturnValue();
-		if (original.is(Items.BUCKET) && result != null && result.getResult().consumesAction()
+		if (result != null && result.getResult().consumesAction()
 				&& result.getObject() != null && !result.getObject().isEmpty() && !result.getObject().is(Items.BUCKET)) {
 			${JavaModName}Triggers.fireBucketFilled(player, result.getObject().copy());
 		}
