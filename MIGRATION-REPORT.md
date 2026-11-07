@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.14.46-beta`
+- 当前版本：`2026.3-4.0.15.48-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -185,6 +185,19 @@
   - `javac`：15 源文件 / 0 错误 / 20 class。
 - **待真机确认**：
   - 伤害/击退/护甲减伤/属性/经验/诅咒的实际数值与触发。
+
+## P4 修复：附魔适用部位（2026.3-4.0.15.48-beta）
+
+- 根因：1.20.1 的附魔台使用 `Enchantment.category.canEnchant(item)`，不会调用 `Enchantment#canEnchant`；之前所有附魔都固定为 `EnchantmentCategory.BREAKABLE`。
+- 修复：根据单一 `minecraft:enchantable/*` supported-item 标签选择正确的 vanilla 类别：
+  - `sword` / `weapon` → `WEAPON`
+  - `chest_armor` / `foot_armor` / `head_armor` / `leg_armor` / `armor` → 对应 armor 类别
+  - `mining` / `bow` / `crossbow` / `fishing` / `trident` / `durability` / `equippable` / `vanishing` → 对应类别
+- `canEnchant` 同时检查类别与标签，覆盖附魔台、铁砧和 `/enchant` 路径。
+- 验证：
+  - 用户的三个 enchantment fixture 生成成功；
+  - `TestWeaponEnchant` 为 `WEAPON`，Chest 为 `ARMOR_CHEST`，Foot 为 `ARMOR_FEET`；
+  - `javac`：17 源文件 / 0 错误 / 22 class。
 
 ## 已知问题 / 下一阶段
 

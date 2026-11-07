@@ -1,3 +1,22 @@
+# [2026.3-4.0.15.48-beta] - 2026-11-07
+
+## Fixes
+- Enchantments now select the correct vanilla `EnchantmentCategory` from their standard `minecraft:enchantable/*` supported-item tag instead of always using `BREAKABLE`.
+  - sword/weapon → `WEAPON`
+  - chest/foot/head/leg/armor → the matching armor category
+  - mining/bow/crossbow/fishing/trident/durability/equippable/vanishing → their categories
+- `canEnchant` now accepts both the selected category and the supported-item tag, fixing anvil/table applicability for the affected enchantments.
+
+## Changes
+- The three user test enchantments now generate:
+  - `TestWeaponEnchant` → `EnchantmentCategory.WEAPON`
+  - `TestArmorEnchantChest` → `EnchantmentCategory.ARMOR_CHEST`
+  - `TestArmorEnchantFoot` → `EnchantmentCategory.ARMOR_FEET`
+- P5 fixture generation passes `javac` with 17 source files and 22 classes.
+
+## Known Limitations
+- The real in-game applicability and effect values still need confirmation.
+
 # [2026.3-4.0.14.46-beta] - 2026-11-07
 
 ## New Content

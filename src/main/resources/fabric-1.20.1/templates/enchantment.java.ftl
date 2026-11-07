@@ -42,7 +42,43 @@
 
 package ${package}.enchantment;
 
+<#assign enchantmentCategory = "EnchantmentCategory.BREAKABLE">
+<#if supportedItems?size == 1>
+	<#assign firstSupportedItem = supportedItems?first>
+	<#if firstSupportedItem == "TAG:minecraft:enchantable/sword" || firstSupportedItem == "TAG:minecraft:enchantable/weapon">
+		<#assign enchantmentCategory = "EnchantmentCategory.WEAPON">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/head_armor">
+		<#assign enchantmentCategory = "EnchantmentCategory.ARMOR_HEAD">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/chest_armor">
+		<#assign enchantmentCategory = "EnchantmentCategory.ARMOR_CHEST">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/leg_armor">
+		<#assign enchantmentCategory = "EnchantmentCategory.ARMOR_LEGS">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/foot_armor">
+		<#assign enchantmentCategory = "EnchantmentCategory.ARMOR_FEET">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/armor">
+		<#assign enchantmentCategory = "EnchantmentCategory.ARMOR">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/mining">
+		<#assign enchantmentCategory = "EnchantmentCategory.DIGGER">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/bow">
+		<#assign enchantmentCategory = "EnchantmentCategory.BOW">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/crossbow">
+		<#assign enchantmentCategory = "EnchantmentCategory.CROSSBOW">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/fishing">
+		<#assign enchantmentCategory = "EnchantmentCategory.FISHING_ROD">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/trident">
+		<#assign enchantmentCategory = "EnchantmentCategory.TRIDENT">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/durability">
+		<#assign enchantmentCategory = "EnchantmentCategory.BREAKABLE">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/equippable">
+		<#assign enchantmentCategory = "EnchantmentCategory.WEARABLE">
+	<#elseif firstSupportedItem == "TAG:minecraft:enchantable/vanishing">
+		<#assign enchantmentCategory = "EnchantmentCategory.VANISHABLE">
+	</#if>
+</#if>
+
 public class ${name}Enchantment extends Enchantment {
+
+	private static final EnchantmentCategory ENCHANTMENT_CATEGORY = ${enchantmentCategory};
 
 	<#if effectcode?has_content>
 	private static final String EFFECTS_JSON = """
@@ -55,14 +91,15 @@ public class ${name}Enchantment extends Enchantment {
 	</#if>
 
 	public ${name}Enchantment() {
-		super(Enchantment.Rarity.<@weightToRarity data.weight/>, EnchantmentCategory.BREAKABLE,
+		super(Enchantment.Rarity.<@weightToRarity data.weight/>, ENCHANTMENT_CATEGORY,
 				new EquipmentSlot[]{<@equipmentSlots data.supportedSlots.getUnmappedValue()/>});
 		${JavaModName}EnchantmentEffects.register(this, EFFECTS_JSON);
 	}
 
 	@Override public boolean canEnchant(ItemStack stack) {
 		<#if supportedItems?has_content>
-		return ${mappedMCItemsToIngredient(supportedItems)}.test(stack);
+		return ENCHANTMENT_CATEGORY.canEnchant(stack.getItem())
+				|| ${mappedMCItemsToIngredient(supportedItems)}.test(stack);
 		<#else>
 		return super.canEnchant(stack);
 		</#if>
