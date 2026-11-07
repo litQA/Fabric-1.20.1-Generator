@@ -1,3 +1,19 @@
+# [2026.3-4.0.8.33-beta] - 2026-11-07
+
+## Fixes
+Fixed 2 bug(s).
+- `entity_switch_hand` did not fire for the player hotkey path because the server handles that path in `ServerGamePacketListenerImpl#handlePlayerAction`, not `LivingEntity#swapHandItems`; a player-action mixin now fires after the swap with the final main/off-hand stacks.
+- `bucket_filled` did not fire with the filled stack; the bucket mixin was replaced with a server-side `UseItemCallback` plus a next-tick check that fires only when an empty bucket became a filled bucket item.
+
+## Changes
+- `entity_switch_hand` still supports the generic `LivingEntity#swapHandItems` path for non-player entities; the player path uses the new `PlayerActionMixin`.
+- `bucket_filled` no longer fires for empty-bucket air use or for emptying an already filled bucket.
+- Removed the unused bucket mixin; the trigger mixin set is now Explosion, FurnaceResultSlot, SwitchHand, and PlayerAction.
+- P2 fixture re-verified with 17 source files and 17 classes.
+
+## Known Limitations
+- The corrected P2 trigger paths still need real-machine client/server verification.
+
 # [2026.3-4.0.7.31-beta] - 2026-11-07
 
 ## Fixes

@@ -15,10 +15,6 @@ public class ${JavaModName}Triggers {
 		void on(Player player, ItemStack stack);
 	}
 
-	public interface BucketFilled {
-		void on(Player player, ItemStack stack);
-	}
-
 	public interface SwitchHand {
 		void on(LivingEntity entity, ItemStack main, ItemStack off);
 	}
@@ -28,16 +24,11 @@ public class ${JavaModName}Triggers {
 	}
 
 	public static final List<ItemSmelted> ITEM_SMELTED = new CopyOnWriteArrayList<>();
-	public static final List<BucketFilled> BUCKET_FILLED = new CopyOnWriteArrayList<>();
 	public static final List<SwitchHand> SWITCH_HAND = new CopyOnWriteArrayList<>();
 	public static final List<Explosion> EXPLOSION = new CopyOnWriteArrayList<>();
 
 	public static void fireItemSmelted(Player player, ItemStack stack) {
 		for (ItemSmelted listener : ITEM_SMELTED) listener.on(player, stack);
-	}
-
-	public static void fireBucketFilled(Player player, ItemStack stack) {
-		for (BucketFilled listener : BUCKET_FILLED) listener.on(player, stack);
 	}
 
 	public static void fireSwitchHand(LivingEntity entity, ItemStack main, ItemStack off) {

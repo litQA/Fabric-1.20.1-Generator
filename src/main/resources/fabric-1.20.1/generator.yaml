@@ -94,8 +94,8 @@ base_templates:
     name: "@SRCROOT/@BASEPACKAGEPATH/trigger/@JavaModNameTriggers.java"
   - template: mixins/explosionmixin.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameExplosionMixin.java"
-  - template: mixins/bucketfilledmixin.java.ftl
-    name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameBucketFilledMixin.java"
+  - template: mixins/playeractionmixin.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNamePlayerActionMixin.java"
   - template: mixins/furnaceresultslotmixin.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/mixins/@JavaModNameFurnaceResultSlotMixin.java"
   - template: mixins/switchhandmixin.java.ftl
