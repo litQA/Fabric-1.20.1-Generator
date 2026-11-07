@@ -1,3 +1,18 @@
+# [2026.3-4.0.20.59-beta] - 2026-11-07
+
+## Fixes
+- Tool harvest level now follows `blockDropsTier` instead of always returning `1` (wood) from the anonymous `Tier`.
+  - WOOD/GOLD → 0
+  - STONE → 1
+  - IRON → 2
+  - DIAMOND → 3
+  - NETHERITE/other → 4
+- This fixes higher-tier tools being treated as wooden by `isCorrectToolForDrops`/required-tool checks.
+
+## Verification
+- `UnbreakableTestTool` (NETHERITE) now generates `getLevel()` returning `4`.
+- P8 fixture `javac`: 17 source files / 24 classes.
+
 # [2026.3-4.0.19.57-beta] - 2026-11-07
 
 ## New Content

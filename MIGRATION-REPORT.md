@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.19.57-beta`
+- 当前版本：`2026.3-4.0.20.59-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -185,6 +185,17 @@
   - `javac`：15 源文件 / 0 错误 / 20 class。
 - **待真机确认**：
   - 伤害/击退/护甲减伤/属性/经验/诅咒的实际数值与触发。
+
+## 修复：工具挖掘等级（2026.3-4.0.20.59-beta）
+
+- 根因：tool 模板的匿名 `Tier#getLevel()` 固定返回 `1`（木级），忽略了元素的 `blockDropsTier`。
+- 修复：按 `blockDropsTier` 映射 Tier level：
+  - WOOD/GOLD → 0
+  - STONE → 1
+  - IRON → 2
+  - DIAMOND → 3
+  - NETHERITE/其他 → 4
+- 验证：`UnbreakableTestTool`（NETHERITE）生成的 `getLevel()` 为 `4`；P8 fixture `javac` 17 源文件 / 24 class。
 
 ## P5：剩余 2026.3 功能（2026.3-4.0.19.57-beta）
 

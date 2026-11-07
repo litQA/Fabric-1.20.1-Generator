@@ -61,8 +61,8 @@ public class ${name}Item extends ${data.toolType?replace("Spade", "Shovel")?repl
 					return ${mappedMCItemsToIngredient(data.repairItems)};
 				}
 				public int getLevel() {
-                    return 1;
-                }
+					return <#if (data.blockDropsTier!"NONE") == "WOOD" || (data.blockDropsTier!"NONE") == "GOLD">0<#elseif (data.blockDropsTier!"NONE") == "STONE">1<#elseif (data.blockDropsTier!"NONE") == "IRON">2<#elseif (data.blockDropsTier!"NONE") == "DIAMOND">3<#else>4</#if>;
+				}
 
 
 			},
