@@ -68,7 +68,9 @@ public class ${JavaModName}EnchantmentEffects {
 	public static void register(Enchantment enchantment, String json) {
 		try {
 			EFFECTS.put(enchantment, JsonParser.parseString(json).getAsJsonObject());
-		} catch (Exception ignored) {
+		} catch (Exception exception) {
+			System.err.println("[${JavaModName}EnchantmentEffects] Failed to parse effects for "
+					+ enchantment.getDescriptionId() + ": " + exception.getMessage());
 		}
 	}
 

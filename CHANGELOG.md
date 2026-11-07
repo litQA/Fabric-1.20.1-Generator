@@ -1,3 +1,20 @@
+# [2026.3-4.0.16.51-beta] - 2026-11-07
+
+## Fixes
+- Fixed malformed enchantment attribute effect JSON:
+  - the `attribute_effect` template now emits its opening `{`;
+  - multiple attribute effects are separated by a trailing comma before `ench_component_attributes` removes the final one.
+- Previously this produced invalid JSON for all enchantments with attributes, so `EnchantmentEffects.register` swallowed the parse error and no attribute modifiers were created.
+- Enchantment effect JSON parse failures are now logged instead of silently ignored.
+
+## Verification
+- Weapon attribute JSON: valid `minecraft:generic.attack_damage`.
+- Chest/foot attribute JSON: valid arrays with multiple modifiers.
+- P5 fixture: three user enchantments generate with valid effect JSON and `javac` passes (17 source files / 22 classes).
+
+## Known Limitations
+- Real in-game attribute values still need confirmation.
+
 # [2026.3-4.0.15.48-beta] - 2026-11-07
 
 ## Fixes

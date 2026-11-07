@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.15.48-beta`
+- 当前版本：`2026.3-4.0.16.51-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -185,6 +185,21 @@
   - `javac`：15 源文件 / 0 错误 / 20 class。
 - **待真机确认**：
   - 伤害/击退/护甲减伤/属性/经验/诅咒的实际数值与触发。
+
+## P4 修复：附魔属性 JSON（2026.3-4.0.16.51-beta）
+
+- 根因：`attribute_effect.json.ftl` 缺少开头的 `{`，多个 `attribute_effect` 之间也缺少逗号。
+  - 单属性附魔生成的对象不完整；
+  - 多属性附魔的 `minecraft:attributes` 数组非法；
+  - `EnchantmentEffects.register` 捕获 JSON 解析异常后静默跳过，导致属性修饰符完全没有注册。
+- 修复：
+  - `attribute_effect` 现在输出完整对象 `{ ... }`；
+  - 每个 `attribute_effect` 以 `},` 结束，`ench_component_attributes` 最后去掉多余逗号；
+  - `register` 解析失败时输出 enchantment id 和异常信息。
+- 验证：
+  - 三个用户 enchantment 的 `EFFECTS_JSON` 全部通过 JSON 解析；
+  - Chest/Foot 的多属性数组结构正确；
+  - `javac` 17 源文件 / 0 错误 / 22 class。
 
 ## P4 修复：附魔适用部位（2026.3-4.0.15.48-beta）
 

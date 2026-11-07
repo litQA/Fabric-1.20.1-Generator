@@ -1,4 +1,5 @@
 <#-- @formatter:off -->
+{
 <#if field$attribute?contains(":")>
 "attribute": "${field$attribute}",
 <#else>
@@ -14,4 +15,5 @@
 "amount": ${input$amount},
 "operation": "${field$operation}",
 "id": "${modid}:enchantment.${registryname}_${cbi}"
+},
 <#-- @formatter:on -->
