@@ -18,7 +18,7 @@ public abstract class ${JavaModName}PlayerActionMixin {
 
 	@Shadow public ServerPlayer player;
 
-	@Inject(method = "handlePlayerAction", at = @At("TAIL"), require = 0)
+	@Inject(method = "handlePlayerAction", at = @At("RETURN"), require = 0)
 	private void onPlayerAction(ServerboundPlayerActionPacket packet, CallbackInfo ci) {
 		if (packet.getAction() == ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND) {
 			${JavaModName}Triggers.fireSwitchHand(this.player, this.player.getMainHandItem().copy(), this.player.getOffhandItem().copy());

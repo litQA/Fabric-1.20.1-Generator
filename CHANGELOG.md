@@ -1,3 +1,18 @@
+# [2026.3-4.0.9.35-beta] - 2026-11-07
+
+## Fixes
+Fixed 2 bug(s).
+- `entity_switch_hand` still did not fire because `handlePlayerAction` returns early for the swap action; the `@At("TAIL")` injection only covered the final return. The player-action mixin now injects at `RETURN` and checks the swap action, so it fires before the early return with the final main/off-hand stacks.
+- `bucket_filled` now hooks `ServerPlayerGameMode#useItem` at RETURN, reads the hand after vanilla applied the filled result, and fires only when the original stack was an empty bucket and the result is a `BucketItem` or milk bucket.
+
+## Changes
+- The bucket event-delay implementation from `.8.33` was replaced with the server game-mode mixin, so `itemstack` is the actual filled result and there is no one-tick delay.
+- Trigger mixins are now Explosion, BucketFilled, FurnaceResultSlot, SwitchHand, and PlayerAction.
+- P2 fixture re-verified with 18 source files and 19 classes.
+
+## Known Limitations
+- The corrected P2 trigger paths still need real-machine client/server verification.
+
 # [2026.3-4.0.8.33-beta] - 2026-11-07
 
 ## Fixes

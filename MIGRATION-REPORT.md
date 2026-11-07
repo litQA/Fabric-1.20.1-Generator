@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.8.33-beta`
+- 当前版本：`2026.3-4.0.9.35-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -117,28 +117,27 @@
   - bettermelon：469 源文件 / 0 错误 / 426 class；`MelonArmorArmor` 已注册 `Modelmelon_rind` 和 `rind_melon_default.png`。
   - 审计：无未豁免 Forge API 残留。
 
-## P2 完成（2026.3-4.0.8.33-beta）
+## P2 完成（2026.3-4.0.9.35-beta）
 
 - **`bucket_filled`**：
-  - 不再使用 bucket mixin；改为 `UseItemCallback` 记录“服务端玩家手持空桶”的待检查项，在下一个 `ServerTickEvents.END_SERVER_TICK` 检查手持槽。
-  - 只有槽位从空桶变成 `BucketItem` 或 `MilkBucketItem`（水/岩浆/奶等）时触发，`itemstack` 依赖为装填后的结果栈。
-  - 空桶右键空气、已装满桶倒出流体都不会触发；客户端不触发，避免双端重复。
+  - `BucketFilledMixin` 注入 `ServerPlayerGameMode#useItem` 的 RETURN。
+  - 使用前 `stack` 必须是空桶；RETURN 时读取 `player.getItemInHand(hand)`，只有结果是 `BucketItem` 或 `MilkBucketItem` 时才触发，`itemstack` 依赖是装填后的结果栈。
+  - 空桶右键空气、已装满桶倒出流体都不会触发；只在服务端触发。
 - **`explosion_occurs`**：
-  - `ExplosionMixin` 注入 `Explosion#explode` 的 HEAD，使用 `@Shadow` 读取 `level/x/y/z` 并触发。
-  - 服务端触发。
+  - `ExplosionMixin` 注入 `Explosion#explode` 的 HEAD，使用 `@Shadow` 读取 `level/x/y/z` 并触发；服务端触发。
 - **`item_smelted`**：
   - `FurnaceResultSlotMixin` 注入 `FurnaceResultSlot#onTake` 的 RETURN，携带 `player` 与结果 `ItemStack`。
 - **`entity_switch_hand`**：
-  - 玩家热键交换走 `ServerGamePacketListenerImpl#handlePlayerAction`，不是 `LivingEntity#swapHandItems`；新增 `PlayerActionMixin` 在 `handlePlayerAction` 的 TAIL 读取交换后的 `getMainHandItem()` / `getOffhandItem()`，依赖项现在正确。
-  - 保留 `SwitchHandMixin` 覆盖非玩家实体的 `LivingEntity#swapHandItems` 路径。
-  - 服务端触发。
+  - 玩家热键交换走 `ServerGamePacketListenerImpl#handlePlayerAction`，且该方法的 swap 分支会提前 return，`@At("TAIL")` 不会执行。
+  - `PlayerActionMixin` 改为 `@At("RETURN")`；在 swap 分支返回前读取 `getMainHandItem()` / `getOffhandItem()`，依赖项正确。
+  - 保留 `SwitchHandMixin` 覆盖非玩家实体的 `LivingEntity#swapHandItems` 路径；服务端触发。
 - **注册与生成**：
-  - `modbase/triggersupport.java.ftl` 生成 `ITEM_SMELTED` / `SWITCH_HAND` / `EXPLOSION` listener 列表和 fire 方法。
-  - 四个 mixin（Explosion、FurnaceResultSlot、SwitchHand、PlayerAction）加入 `mixins.json`，使用 `require = 0`。
+  - `modbase/triggersupport.java.ftl` 生成 `ITEM_SMELTED` / `BUCKET_FILLED` / `SWITCH_HAND` / `EXPLOSION` listener 列表和 fire 方法。
+  - 五个 mixin（Explosion、BucketFilled、FurnaceResultSlot、SwitchHand、PlayerAction）加入 `mixins.json`，使用 `require = 0`。
 - **验证**：
-  - `p2workspace`：4 个 trigger procedure、`Triggers`、4 个 mixin 生成成功。
-  - `javac`：17 源文件 / 0 错误 / 17 class。
-  - 生成物包含 `P2BucketFilledProcedure`、`P2ExplosionOccursProcedure`、`P2ItemSmeltedProcedure`、`P2EntitySwitchHandProcedure`，以及 `TestmodModExplosionMixin` / `TestmodModFurnaceResultSlotMixin` / `TestmodModSwitchHandMixin` / `TestmodModPlayerActionMixin`。
+  - `p2workspace`：4 个 trigger procedure、`Triggers`、5 个 mixin 生成成功。
+  - `javac`：18 源文件 / 0 错误 / 19 class。
+  - 生成物包含 `P2BucketFilledProcedure`、`P2ExplosionOccursProcedure`、`P2ItemSmeltedProcedure`、`P2EntitySwitchHandProcedure`，以及 `TestmodModExplosionMixin` / `TestmodModBucketFilledMixin` / `TestmodModFurnaceResultSlotMixin` / `TestmodModSwitchHandMixin` / `TestmodModPlayerActionMixin`。
 - **待真机确认**：
   - 四个 trigger 的实际注入时机与客户端/服务端行为。
 
