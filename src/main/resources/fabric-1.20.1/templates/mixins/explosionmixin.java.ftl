@@ -22,7 +22,9 @@ public abstract class ${JavaModName}ExplosionMixin {
 
 	@Inject(method = "explode", at = @At("HEAD"), require = 0)
 	private void onExplode(CallbackInfo ci) {
-		${JavaModName}Triggers.fireExplosion(this.level, this.x, this.y, this.z);
+		if (!this.level.isClientSide) {
+			${JavaModName}Triggers.fireExplosion(this.level, this.x, this.y, this.z);
+		}
 	}
 }
 <#-- @formatter:on -->

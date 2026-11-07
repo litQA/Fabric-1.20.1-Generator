@@ -1,3 +1,17 @@
+# [2026.3-4.0.7.31-beta] - 2026-11-07
+
+## Fixes
+Fixed 2 bug(s).
+- `entity_switch_hand` supplied the post-swap off-hand item for both dependencies because it hooked `setItemInHand`; it now hooks `LivingEntity#swapHandItems` at RETURN and reads the new main/off-hand after the swap.
+- `bucket_filled` fired on every bucket use and supplied the original empty bucket; it now hooks `BucketItem#use` and `MilkBucketItem#use` at RETURN, fires only for a successful empty-bucket fill, and supplies the filled result stack.
+
+## Changes
+- `bucket_filled`, `entity_switch_hand`, and `explosion_occurs` now fire server-side only, avoiding duplicate client/server procedure runs.
+- P2 fixture re-verified with 17 source files and 18 classes.
+
+## Known Limitations
+- The corrected P2 trigger mixins still need real-machine client/server verification.
+
 # [2026.3-4.0.6.29-beta] - 2026-11-07
 
 ## New Content
