@@ -79,6 +79,7 @@ package ${package}.enchantment;
 public class ${name}Enchantment extends Enchantment {
 
 	private static final EnchantmentCategory ENCHANTMENT_CATEGORY = ${enchantmentCategory};
+	private static final EquipmentSlot[] SUPPORTED_SLOTS = new EquipmentSlot[]{<@equipmentSlots data.supportedSlots.getUnmappedValue()/>};
 
 	<#if effectcode?has_content>
 	private static final String EFFECTS_JSON = """
@@ -91,9 +92,8 @@ public class ${name}Enchantment extends Enchantment {
 	</#if>
 
 	public ${name}Enchantment() {
-		super(Enchantment.Rarity.<@weightToRarity data.weight/>, ENCHANTMENT_CATEGORY,
-				new EquipmentSlot[]{<@equipmentSlots data.supportedSlots.getUnmappedValue()/>});
-		${JavaModName}EnchantmentEffects.register(this, EFFECTS_JSON);
+		super(Enchantment.Rarity.<@weightToRarity data.weight/>, ENCHANTMENT_CATEGORY, SUPPORTED_SLOTS);
+		${JavaModName}EnchantmentEffects.register(this, EFFECTS_JSON, SUPPORTED_SLOTS);
 	}
 
 	@Override public boolean canEnchant(ItemStack stack) {

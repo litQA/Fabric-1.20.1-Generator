@@ -27,7 +27,7 @@ public abstract class ${JavaModName}ItemStackAttributeMixin {
 		ItemStack stack = (ItemStack) (Object) this;
 		Multimap<Attribute, AttributeModifier> result = HashMultimap.create(cir.getReturnValue());
 		for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(stack).entrySet()) {
-			for (${JavaModName}EnchantmentEffects.AttributeEffect effect : ${JavaModName}EnchantmentEffects.attributes(entry.getKey(), entry.getValue())) {
+			for (${JavaModName}EnchantmentEffects.AttributeEffect effect : ${JavaModName}EnchantmentEffects.attributes(entry.getKey(), entry.getValue(), slot)) {
 				result.put(effect.attribute(), effect.modifier());
 			}
 		}

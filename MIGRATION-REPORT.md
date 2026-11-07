@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.16.51-beta`
+- 当前版本：`2026.3-4.0.17.53-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -185,6 +185,20 @@
   - `javac`：15 源文件 / 0 错误 / 20 class。
 - **待真机确认**：
   - 伤害/击退/护甲减伤/属性/经验/诅咒的实际数值与触发。
+
+## P4 修复：附魔属性限定部位（2026.3-4.0.17.53-beta）
+
+- 根因：`ItemStackAttributeMixin` 在 `getAttributeModifiers(slot)` 中不检查 `slot`，把附魔属性加到所有装备槽的查询结果里；因此武器/胸甲/靴子附魔的属性会在所有部位显示或生效。
+- 修复：
+  - enchantment 模板生成共享 `SUPPORTED_SLOTS` 并传给 `Enchantment` 与 `EnchantmentEffects.register`。
+  - `EnchantmentEffects` 为每个附魔保存 `Set<EquipmentSlot>`。
+  - `attributes(enchantment, level, slot)` 对不匹配的槽位返回空。
+  - `ItemStackAttributeMixin` 使用当前查询的 `slot`。
+- 生成结果：
+  - Weapon / Pickaxe → `MAINHAND`
+  - Chest → `CHEST`
+  - Foot → `FEET`
+- 验证：P5 fixture `javac` 17 源文件 / 0 错误 / 23 class。
 
 ## P4 修复：附魔属性 JSON（2026.3-4.0.16.51-beta）
 

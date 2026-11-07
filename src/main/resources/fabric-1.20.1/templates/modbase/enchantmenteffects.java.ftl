@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -25,14 +26,20 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class ${JavaModName}EnchantmentEffects {
 
-	private static final Map<Enchantment, JsonObject> EFFECTS = new HashMap<>();
+	private record EffectData(JsonObject effects, Set<EquipmentSlot> slots) {
+	}
+
+	private static final Map<Enchantment, EffectData> EFFECTS = new HashMap<>();
 
 	public record AttributeEffect(Attribute attribute, AttributeModifier modifier) {
 	}
@@ -65,13 +72,23 @@ public class ${JavaModName}EnchantmentEffects {
 		});
 	}
 
-	public static void register(Enchantment enchantment, String json) {
+	public static void register(Enchantment enchantment, String json, EquipmentSlot... slots) {
 		try {
-			EFFECTS.put(enchantment, JsonParser.parseString(json).getAsJsonObject());
+			Set<EquipmentSlot> supportedSlots = new HashSet<>(Arrays.asList(slots));
+			EFFECTS.put(enchantment, new EffectData(JsonParser.parseString(json).getAsJsonObject(), supportedSlots));
 		} catch (Exception exception) {
 			System.err.println("[${JavaModName}EnchantmentEffects] Failed to parse effects for "
 					+ enchantment.getDescriptionId() + ": " + exception.getMessage());
 		}
+	}
+
+	public static void register(Enchantment enchantment, String json) {
+		register(enchantment, json, EquipmentSlot.values());
+	}
+
+	private static JsonObject effects(Enchantment enchantment) {
+		EffectData data = EFFECTS.get(enchantment);
+		return data == null ? null : data.effects();
 	}
 
 	public static float damage(Enchantment enchantment, int level) {
@@ -96,7 +113,7 @@ public class ${JavaModName}EnchantmentEffects {
 
 	public static List<AttributeEffect> attributes(Enchantment enchantment, int level) {
 		List<AttributeEffect> result = new ArrayList<>();
-		JsonObject root = EFFECTS.get(enchantment);
+		JsonObject root = effects(enchantment);
 		if (root == null || !root.has("minecraft:attributes")) {
 			return result;
 		}
@@ -127,13 +144,21 @@ public class ${JavaModName}EnchantmentEffects {
 		return result;
 	}
 
+	public static List<AttributeEffect> attributes(Enchantment enchantment, int level, EquipmentSlot slot) {
+		EffectData data = EFFECTS.get(enchantment);
+		if (data == null || (slot != null && !data.slots().contains(slot))) {
+			return List.of();
+		}
+		return attributes(enchantment, level);
+	}
+
 	private static boolean has(String key, Enchantment enchantment) {
-		JsonObject root = EFFECTS.get(enchantment);
+		JsonObject root = effects(enchantment);
 		return root != null && root.has(key);
 	}
 
 	private static double list(String key, Enchantment enchantment, int level) {
-		JsonObject root = EFFECTS.get(enchantment);
+		JsonObject root = effects(enchantment);
 		if (root == null || !root.has(key) || !root.get(key).isJsonArray()) {
 			return 0;
 		}

@@ -1,3 +1,23 @@
+# [2026.3-4.0.17.53-beta] - 2026-11-07
+
+## Fixes
+- Enchantment attribute modifiers are now restricted to the enchantment's configured equipment slots.
+  - The generated enchantment exposes a shared `SUPPORTED_SLOTS` array.
+  - `EnchantmentEffects` stores the supported slots per enchantment.
+  - `ItemStackAttributeMixin` passes the queried `EquipmentSlot` and skips attributes for non-supported slots.
+- This stops weapon/armor enchantment attributes from being shown or applied for every equipment slot.
+
+## Verification
+- Generated slots:
+  - Weapon/Pickaxe → `MAINHAND`
+  - Chest enchantment → `CHEST`
+  - Foot enchantment → `FEET`
+- Attribute lookup now filters by slot.
+- P5 fixture `javac`: 17 source files / 23 classes.
+
+## Known Limitations
+- The actual tooltip display and equipment behavior still need real-machine confirmation.
+
 # [2026.3-4.0.16.51-beta] - 2026-11-07
 
 ## Fixes
