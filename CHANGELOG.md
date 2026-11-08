@@ -1,3 +1,8 @@
+# [2026.2-3.0.5] - 2026-11-08
+
+## Changed
+- Mixin trigger callbacks no longer print diagnostic lines to the console. The debug output was temporary instrumentation and removing it does not change trigger behaviour, cancellation or dependency mapping.
+
 # [2026.2-3.0.4-beta] - 2026-11-01
 
 ## New Content
@@ -26,6 +31,8 @@
 - Crafting remainders for items and tools are not available on Fabric 1.20.1 without an accessor mixin; the item is consumed when crafted.
 - Energy, fluid tank and item-level item handler procedure blocks are generated as type-correct no-ops.
 - The `fluid` element type is supported, but fluid textures must be supplied by the workspace.
+
+
 # [2026.2-3.0.3-beta] - 2026-10-31
 
 ## New Content
@@ -48,6 +55,7 @@
 - Crafting remainders for items and tools are not available on Fabric 1.20.1 without an accessor mixin; the item is consumed when crafted.
 - Energy, fluid tank and item-level item handler procedure blocks are generated as type-correct no-ops, because Fabric 1.20.1 has no equivalent capability API.
 - Forty global triggers remain compilable stubs: Fabric API 0.92.12 exposes no equivalent event and the reference generator fires those through mixins, which are out of scope for this release.
+
 
 # [2026.2-3.0.2-beta] - 2026-10-31
 
