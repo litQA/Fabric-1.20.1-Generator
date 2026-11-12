@@ -1,7 +1,7 @@
 # Fabric 1.20.1 Generator — MCreator 2026.3 迁移报告
 
 - 目标 MCreator：EAP 2026.3.44621（构建号 `202600344621`）
-- 当前版本：`2026.3-4.0.20.59-beta`
+- 当前版本：`2026.3-4.0.21.61-beta`
 - 目标 Minecraft / Fabric：1.20.1 / Fabric Loader 0.20.1 / Fabric API 0.92.12
 - 源码目录：`plugin-branch-2026.3/`
 
@@ -185,6 +185,18 @@
   - `javac`：15 源文件 / 0 错误 / 20 class。
 - **待真机确认**：
   - 伤害/击退/护甲减伤/属性/经验/诅咒的实际数值与触发。
+
+## 修复：工作区 Gradle wrapper 可移植性（2026.3-4.0.21.61-beta）
+
+- 根因：`workspacebase` 的 `gradle-wrapper.properties` 使用了本机绝对路径：
+  `file:///B:/QA/.../reference_resources/gradle-9.8.0-bin.zip`。
+  其他人创建/构建工作区时该文件不存在。
+- 修复：三套 workspacebase（Fabric、datapack、forge）统一改为：
+  `https://services.gradle.org/distributions/gradle-9.8.0-bin.zip`
+- 验证：
+  - 新生成工作区的 wrapper 只包含公共 URL；
+  - 新工作区顶层 build/config 文件扫描无 `B:`, `C:`, `reference_resources`, `_verify`, `jdk-25` 路径；
+  - P9 fixture `javac` 17 源文件 / 24 class。
 
 ## 修复：工具挖掘等级（2026.3-4.0.20.59-beta）
 

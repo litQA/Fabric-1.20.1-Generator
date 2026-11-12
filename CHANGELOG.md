@@ -1,3 +1,16 @@
+# [2026.3-4.0.21.61-beta] - 2026-11-07
+
+## Fixes
+- Workspace Gradle wrappers now use the public Gradle distribution URL:
+  `https://services.gradle.org/distributions/gradle-9.8.0-bin.zip`
+- Removed the sandbox-local `file:///B:/.../reference_resources/gradle-9.8.0-bin.zip` URL from all workspacebase variants.
+- New workspaces no longer depend on this machine's local Gradle zip path.
+
+## Verification
+- Fresh generated workspace wrapper contains only the public distribution URL.
+- Generated workspace top-level build/config files contain no `B:`, `C:`, `reference_resources`, `_verify`, or `jdk-25` paths.
+- P9 fixture `javac`: 17 source files / 24 classes.
+
 # [2026.3-4.0.20.59-beta] - 2026-11-07
 
 ## Fixes
