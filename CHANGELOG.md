@@ -3,13 +3,13 @@
 ## Fixes
 - Workspace Gradle wrappers now use the public Gradle distribution URL:
   `https://services.gradle.org/distributions/gradle-9.8.0-bin.zip`
-- Removed the sandbox-local `file:///B:/.../reference_resources/gradle-9.8.0-bin.zip` URL from all workspacebase variants.
+- Removed the sandbox-local Gradle file URL from all workspacebase variants.
 - New workspaces no longer depend on this machine's local Gradle zip path.
 
 ## Verification
 - Fresh generated workspace wrapper contains only the public distribution URL.
-- Generated workspace top-level build/config files contain no `B:`, `C:`, `reference_resources`, `_verify`, or `jdk-25` paths.
-- P9 fixture `javac`: 17 source files / 24 classes.
+- Generated workspace top-level build/config files contain no host-specific absolute paths.
+- Test workspace `javac`: 17 source files / 24 classes.
 
 # [2026.3-4.0.20.59-beta] - 2026-11-07
 
@@ -23,8 +23,8 @@
 - This fixes higher-tier tools being treated as wooden by `isCorrectToolForDrops`/required-tool checks.
 
 ## Verification
-- `UnbreakableTestTool` (NETHERITE) now generates `getLevel()` returning `4`.
-- P8 fixture `javac`: 17 source files / 24 classes.
+- Test tool (NETHERITE) now generates `getLevel()` returning `4`.
+- Test workspace `javac`: 17 source files / 24 classes.
 
 # [2026.3-4.0.19.57-beta] - 2026-11-07
 
@@ -46,7 +46,7 @@
   - armor with `maxDamage == 0` now overrides `canBeDepleted()` to return false.
 
 ## Verification
-- P7 fixture with multipart block, loot modifier, raytrace (WATER + FALLDAMAGE_RESETTING), strong power, and unbreakable armor generated successfully.
+- Test workspace with multipart block, loot modifier, raytrace (WATER + FALLDAMAGE_RESETTING), strong power, and unbreakable armor generated successfully.
 - Multipart JSON starts with `"multipart": [...]` and uses per-state models.
 - `javac`: 30 source files / 0 errors / 46 classes.
 
@@ -59,7 +59,7 @@
 ## New Content
 - Enchantment `minecraft:armor_effectiveness` now applies through a `LivingEntity#getArmorValue` mixin, with slot filtering from the enchantment's supported slots.
 - Removed the old `EnchantmentHelper#getDamageProtection` approximation so armor effectiveness is not counted as protection points.
-- Full P4 effect fixture now covers:
+- Full effect test workspace now covers:
   - armor effectiveness;
   - mob and block experience;
   - damage and knockback;
@@ -70,7 +70,7 @@
 ## Verification
 - The full fixture effect JSON parses correctly with all eight effect components.
 - `LivingEntityMixin` and `EnchantmentHelperMixin` generate and apply.
-- P6 fixture `javac`: 16 source files / 22 classes.
+- Test workspace `javac`: 16 source files / 22 classes.
 
 ## Known Limitations
 - Real-machine behavior of armor effectiveness and experience still needs confirmation.
@@ -90,7 +90,7 @@
   - Chest enchantment → `CHEST`
   - Foot enchantment → `FEET`
 - Attribute lookup now filters by slot.
-- P5 fixture `javac`: 17 source files / 23 classes.
+- Test workspace `javac`: 17 source files / 23 classes.
 
 ## Known Limitations
 - The actual tooltip display and equipment behavior still need real-machine confirmation.
@@ -107,7 +107,7 @@
 ## Verification
 - Weapon attribute JSON: valid `minecraft:generic.attack_damage`.
 - Chest/foot attribute JSON: valid arrays with multiple modifiers.
-- P5 fixture: three user enchantments generate with valid effect JSON and `javac` passes (17 source files / 22 classes).
+- Test workspace: three test enchantments generate with valid effect JSON and `javac` passes (17 source files / 22 classes).
 
 ## Known Limitations
 - Real in-game attribute values still need confirmation.
@@ -122,11 +122,11 @@
 - `canEnchant` now accepts both the selected category and the supported-item tag, fixing anvil/table applicability for the affected enchantments.
 
 ## Changes
-- The three user test enchantments now generate:
-  - `TestWeaponEnchant` → `EnchantmentCategory.WEAPON`
-  - `TestArmorEnchantChest` → `EnchantmentCategory.ARMOR_CHEST`
-  - `TestArmorEnchantFoot` → `EnchantmentCategory.ARMOR_FEET`
-- P5 fixture generation passes `javac` with 17 source files and 22 classes.
+- The test enchantments now generate:
+  - Main-hand test enchantment → `EnchantmentCategory.WEAPON`
+  - Chest test enchantment → `EnchantmentCategory.ARMOR_CHEST`
+  - Foot test enchantment → `EnchantmentCategory.ARMOR_FEET`
+- Test workspace generation passes `javac` with 17 source files and 22 classes.
 
 ## Known Limitations
 - The real in-game applicability and effect values still need confirmation.
@@ -145,7 +145,7 @@
 ## Changes
 - Enchantment classes now embed their generated effect JSON and register it with the runtime engine.
 - The 1.20.1 attribute effect template maps standard datalist keys to the 1.20.1 attribute registry IDs.
-- P4 fixture generation passes `javac` with 15 source files and 20 classes.
+- Test workspace generation passes `javac` with 15 source files and 20 classes.
 
 ## Known Limitations
 - Effect condition predicates beyond `predicate_true` are not evaluated yet.
@@ -162,7 +162,7 @@
 
 ## Changes
 - Item and tool constructors register their remainder at runtime; the `Item#getCraftingRemainingItem` / `hasCraftingRemainingItem` bridge is provided by a mixin.
-- P3 fixture generation covers the equipment trigger, item remainder, and tool remainder; `javac` passes with 18 source files and 23 classes.
+- Test workspace generation covers the equipment trigger, item remainder, and tool remainder; `javac` passes with 18 source files and 23 classes.
 
 ## Known Limitations
 - `damageOnCrafting` is not applied as durability damage in this batch; the item/tool still stays in the grid when configured.
@@ -175,7 +175,7 @@
 
 ## Changes
 - The filled result stack is passed directly as the `itemstack` dependency.
-- P2 fixture re-verified with 18 source files and 19 classes.
+- Test workspace re-verified with 18 source files and 19 classes.
 
 ## Known Limitations
 - The result-only bucket check still needs real-machine confirmation.
@@ -187,7 +187,7 @@
 
 ## Changes
 - The `ServerPlayerGameMode` bucket mixin and its `@Redirect` were removed; the bucket mixin now targets only the bucket item classes.
-- P2 fixture re-verified with 18 source files and 19 classes.
+- Test workspace re-verified with 18 source files and 19 classes.
 
 ## Known Limitations
 - The direct bucket use mixin still needs real-machine confirmation.
@@ -199,7 +199,7 @@
 
 ## Changes
 - `entity_switch_hand` was confirmed working on the real client through the `PlayerActionMixin` RETURN injection.
-- P2 fixture re-verified with 18 source files and 19 classes.
+- Test workspace re-verified with 18 source files and 19 classes.
 
 ## Known Limitations
 - The `bucket_filled` redirect still needs real-machine confirmation.
@@ -214,7 +214,7 @@ Fixed 2 bug(s).
 ## Changes
 - The bucket event-delay implementation from `.8.33` was replaced with the server game-mode mixin, so `itemstack` is the actual filled result and there is no one-tick delay.
 - Trigger mixins are now Explosion, BucketFilled, FurnaceResultSlot, SwitchHand, and PlayerAction.
-- P2 fixture re-verified with 18 source files and 19 classes.
+- Test workspace re-verified with 18 source files and 19 classes.
 
 ## Known Limitations
 - The corrected P2 trigger paths still need real-machine client/server verification.
@@ -230,7 +230,7 @@ Fixed 2 bug(s).
 - `entity_switch_hand` still supports the generic `LivingEntity#swapHandItems` path for non-player entities; the player path uses the new `PlayerActionMixin`.
 - `bucket_filled` no longer fires for empty-bucket air use or for emptying an already filled bucket.
 - Removed the unused bucket mixin; the trigger mixin set is now Explosion, FurnaceResultSlot, SwitchHand, and PlayerAction.
-- P2 fixture re-verified with 17 source files and 17 classes.
+- Test workspace re-verified with 17 source files and 17 classes.
 
 ## Known Limitations
 - The corrected P2 trigger paths still need real-machine client/server verification.
@@ -244,7 +244,7 @@ Fixed 2 bug(s).
 
 ## Changes
 - `bucket_filled`, `entity_switch_hand`, and `explosion_occurs` now fire server-side only, avoiding duplicate client/server procedure runs.
-- P2 fixture re-verified with 17 source files and 18 classes.
+- Test workspace re-verified with 17 source files and 18 classes.
 
 ## Known Limitations
 - The corrected P2 trigger mixins still need real-machine client/server verification.
@@ -259,7 +259,7 @@ Fixed 2 bug(s).
 - A generated trigger registry and three global trigger mixins.
 
 ## Changes
-- P2 fixture generation covers all four triggers; `javac` passes with 16 source files and 16 classes.
+- Test workspace generation covers all four triggers; `javac` passes with 16 source files and 16 classes.
 - The trigger mixins are listed in the generated `mixins.json` and have `require = 0` so a missing target does not crash startup.
 
 ## Known Limitations
@@ -276,8 +276,8 @@ Fixed 2 bug(s).
 
 ## Changes
 - Raytrace water/fall-damage-resetting modes, vector cross product, and armor durability 0 were verified against 1.20.1 APIs.
-- P1 fixture generation covers 18 elements and passes `javac` with 43 source files and 42 classes.
-- The bettermelon regression workspace passes generation and `javac` with 469 source files and 426 classes.
+- Test workspace generation covers 18 elements and passes `javac` with 43 source files and 42 classes.
+- The regression test workspace passes generation and `javac` with 469 source files and 426 classes.
 
 ## Known Limitations
 - The custom armor model renderer and mixin still need real-machine client verification.
@@ -337,7 +337,7 @@ Fixed 7 bug(s).
 ## Changes
 - The plugin metadata now targets MCreator 2026.3 EAP build 202600344621 and uses plugin weight 10.
 - Element definitions declare their provided base types, and the mod entrypoint uses the 2026.3 `types.base_*` collections.
-- The Gradle build uses the local Gradle distribution under `reference_resources/` and persists the build number in `gradle.properties`.
+- The Gradle build uses the standard Gradle wrapper distribution and persists the build number in `gradle.properties`.
 
 ## Fixes
 Fixed 2 bug(s).

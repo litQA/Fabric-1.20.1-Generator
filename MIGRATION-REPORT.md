@@ -32,7 +32,7 @@
    - `gradle.properties`：构建序号持久化；`tools/build-plugin.ps1` 在每次构建后递增（失败也递增）。
    - ZIP 固定为 `generator-fabric-1.20.1.zip`，不携带版本号。
    - `build.gradle` 将 `LICENSE` 打入 ZIP。
-   - Gradle wrapper 指向 `reference_resources/gradle-9.8.0-bin.zip`；Gradle 缓存重定向到 `caches/gradle`。
+   - Gradle wrapper 使用标准公共发行地址；Gradle 缓存重定向到 `caches/gradle`。
 
 4. **内嵌式检查**
    - ZIP 根：`plugin.json`、`LICENSE`、`fabric-1.20.1/`、`fabric-1.20.1-base/`。
@@ -43,7 +43,7 @@
 
 - 构建：`tools/build-plugin.ps1` → `BUILD SUCCESSFUL`，产物 `build/generator-fabric-1.20.1.zip`。
 - 2026.3 插件加载：`GenHarness` 输出 `[HARNESS] plugins: 15`，并成功加载 `generator-fabric-1.20.1`。
-- `testmod` 工作区（item + block）：
+- 测试工作区（item + block）：
   - `[HARNESS] generateBase OK`
   - 两个元素均 `OK`
   - `javac`：7 个源文件，`exit=0`，7 个 class。
@@ -51,17 +51,17 @@
   - `[HARNESS] final generateBase OK`
   - `javac`：36 个源文件，`exit=0`，46 个 class。
 - Forge 污染审计：继承 265 文件，命中 19（全部白名单），`-FailOnHit` 通过。
-- 生成的 `mod.java` 已正确调用 `TestmodModBlocks.load()` / `TestmodModItems.load()` / `TestmodModEntities.load()` / `TestmodModBlockEntities.load()`，说明 `base_types` 迁移生效。
+- 生成的 `mod.java` 已正确调用 Blocks / Items / Entities / BlockEntities 的 `load()`，说明 `base_types` 迁移生效。
 
 ## P0 修复回归（2026.3-4.0.0.20-beta）
 
 用户真机测试暴露了三个工作区问题，本轮修复并回归如下：
 
-- **test-croparium**：`StonecutterFunction` 的 `block_inv_clear_slot` 模板使用已移除的 `customBlockIndex`，导致整个 procedure 不生成，进而出现 3 处 `cannot find symbol`。模板改为 2026.3 的 `${cbi}`。
+- **测试工作区（P0 回归）**：`StonecutterFunction` 的 `block_inv_clear_slot` 模板使用已移除的 `customBlockIndex`，导致整个 procedure 不生成，进而出现 3 处 `cannot find symbol`。模板改为 2026.3 的 `${cbi}`。
   - 由于完整工作区依赖 `forge-config-api-port` 的 `config` 元素/API，headless harness 的 `verifyPluginRequirements` 无法在隔离目录中满足该组合；用最小 `block_inv_clear_slot` fixture 验证：`generateElement OK`，`javac` 6 源文件 / 0 错误。
-- **test-everrose**：自定义 fence/wall 未加入 `minecraft:fences` / `minecraft:walls` 标签，导致同方块不连接。改为在 `generator.yaml` 的 `base_templates` 生成 `data/minecraft/tags/blocks/fences.json` 与 `walls.json`。
-  - 回归：两个标签均生成，包含 `everrose:everrose_fence`、`everrose:cut_everrose_fence`、`everrose:everrose_wall`、`everrose:cut_everrose_wall`。
-- **test-bettermelon**：
+- **测试工作区**：自定义 fence/wall 未加入 `minecraft:fences` / `minecraft:walls` 标签，导致同方块不连接。改为在 `generator.yaml` 的 `base_templates` 生成 `data/minecraft/tags/blocks/fences.json` 与 `walls.json`。
+  - 回归：两个标签均生成，并包含测试工作区的自定义 fence/wall。
+- **测试工作区**：
   - `villagertrades.java.ftl` 使用 1.21.x 的 `trade.tradeEntries` 嵌套模型；1.20.1 模型是扁平的 `trade.trades`，已改写。
   - `actionresulttype` 变量类型缺少 `local` scope，导致 `procedure.java.ftl` 渲染失败；已补 `local` scope。
   - `BonemealableBlock` 方法使用旧类型 `BlockGetter`/`Random`，已改为 `LevelReader`/`RandomSource`。
@@ -69,7 +69,7 @@
   - 回归：`generateBase OK` + 全部元素生成成功；`javac` 458 源文件 / 0 错误 / 405 class。
 - **MixinProbe**：`procedure_mixin.java.ftl` 中 30 处 `[MixinProbe]` 控制台输出已全部移除；生成的 mixin 中不再出现该字符串。
 
-> **测试隔离教训**：`MCreatorEAP2026344621/plugins/` 中残留的旧 `generator-fabric-1.20.1.zip`（`.3`）会先于 `MCREATOR_PLUGINS_FOLDER` 被加载，导致 harness 实际测试旧插件。`tools/smoke-test.ps1` 已改为在 `caches/smoke/workdir/` 中只放 `mcreator-core`、localization、themes、link、forge-config-api-port 和被测插件，避免旧插件或其他生成器（尤其是 1.21.x 的 `common.*.yaml`）污染测试。
+> **测试隔离教训**：插件安装目录中残留的旧 `generator-fabric-1.20.1.zip`（`.3`）会先于 `MCREATOR_PLUGINS_FOLDER` 被加载，导致 harness 实际测试旧插件。`tools/smoke-test.ps1` 已改为在隔离 smoke 测试目录中只放 `mcreator-core`、localization、themes、link、forge-config-api-port 和被测插件，避免旧插件或其他生成器（尤其是 1.21.x 的 `common.*.yaml`）污染测试。
 
 ## 2026.3-4.0.4.24-beta 追加修复
 
@@ -77,7 +77,7 @@
 - **自定义流体桶未出现在创造模式物品栏**：
   - 根因：bucket item 已经生成并注册，但 `fabric_fluidbucket.java.ftl` 没有把它加入流体配置的创造模式标签页；`tabMap` 的元素名匹配对 fluid bucket 也不可靠。
   - 修复：模板直接遍历 `data.creativeTabs`，对 `CUSTOM:` 标签页注册 `ItemGroupEvents.modifyEntriesEvent(${JavaModName}Tabs.TAB_...)`，对原版标签页注册对应的 `CreativeModeTabs` 项。
-  - 回归：`SampleTab` + `TestFluidTab` fixture 生成 `TestFluidTabItem`，其中包含 `ItemGroupEvents.modifyEntriesEvent(TestmodModTabs.TAB_SAMPLETAB).register(...)`；`javac` 10 源文件 / 0 错误 / 12 class。
+  - 回归：测试工作区生成自定义 Tab 物品并注册到对应 Tab；`javac` 10 源文件 / 0 错误 / 12 class。
 - **P1 范围更新**：自定义 Java armor 模型纳入 P1。
 
 ## 2026.3-4.0.3.21-beta 追加修复
@@ -85,11 +85,11 @@
 - **自定义流体桶**：
   - 根因：主生成器没有覆盖 `json/bucket.json.ftl`，1.20.1 的 fluid bucket 继续使用 Forge 的 `forge:fluid_container` / `forge:item/bucket_drip` 模型，Fabric 无法解析。
   - 修复：新增 Fabric 版 `templates/json/bucket.json.ftl`，使用 `item/generated`；有 `textureBucket` 时用指定纹理，留空时回退到 `minecraft:item/bucket`。
-  - 回归：新建 2026.3 fluid fixture（`generateBucket=true`、`textureBucket` 为空）生成 `TestFluidItem` 和 `test_fluid_bucket.json`，模型为合法 Fabric `item/generated`。
+  - 回归：新建 2026.3 fluid fixture（`generateBucket=true`、`textureBucket` 为空）生成测试流体桶物品和合法 Fabric `item/generated` 模型。
 - **Advancement item predicate**：
   - 根因：`jsontriggers/_mcitem.json.ftl` 输出 `"items": "id"`；1.20.1 需要 `"items": ["id"]`。
   - 修复：改为数组形式。
-  - 回归：bettermelon 的 `unsweet_melon_drinks.json` 已输出 `"items": ["qa_better_melon:unripe_melon_drinks"]`；`javac` 458 源文件 / 0 错误 / 405 class。
+  - 回归：测试工作区的 advancement 已输出测试物品数组；`javac` 458 源文件 / 0 错误 / 405 class。
 - **运行时日志评估**：
   - `Couldn't load tag ... deleted_mod_element`：工作区问题。工作区里仍有已删除元素的旧 tag 引用，需要清理对应 tag 或重新生成 tag。
   - `Ignoring unknown attribute 'forge:entity_gravity'` / `forge:step_height_addition`：生成代码中没有这些字符串；属于运行环境/其他 mod 的 Forge 属性注册，不是本生成器输出。
@@ -113,8 +113,8 @@
   - `elementinits/armormodels.java.ftl` 生成 `ARMOR_MODELS` 映射；`client.java.ftl` 调用 clientLoad。
   - `armorlayermixin.java.ftl` 注入 `HumanoidArmorLayer#renderArmorPiece`（模型替换）和 `getArmorLocation`（纹理替换）；已用 `javap` 核对 1.20.1 目标签名。
 - **验证**：
-  - `p1workspace`：18 个元素生成成功，`javac` 43 源文件 / 0 错误 / 42 class。
-  - bettermelon：469 源文件 / 0 错误 / 426 class；`MelonArmorArmor` 已注册 `Modelmelon_rind` 和 `rind_melon_default.png`。
+  - 测试工作区：18 个元素生成成功，`javac` 43 源文件 / 0 错误 / 42 class。
+  - 测试工作区：469 源文件 / 0 错误 / 426 class；自定义盔甲模型已注册。
   - 审计：无未豁免 Forge API 残留。
 
 ## P2 完成（2026.3-4.0.12.41-beta）
@@ -136,9 +136,9 @@
   - `modbase/triggersupport.java.ftl` 生成 `ITEM_SMELTED` / `BUCKET_FILLED` / `SWITCH_HAND` / `EXPLOSION` listener 列表和 fire 方法。
   - 五个 mixin（Explosion、BucketFilled、FurnaceResultSlot、SwitchHand、PlayerAction）加入 `mixins.json`，使用 `require = 0`。
 - **验证**：
-  - `p2workspace`：4 个 trigger procedure、`Triggers`、5 个 mixin 生成成功。
+  - 测试工作区：4 个 trigger procedure、`Triggers`、5 个 mixin 生成成功。
   - `javac`：18 源文件 / 0 错误 / 19 class。
-  - 生成物包含 `P2BucketFilledProcedure`、`P2ExplosionOccursProcedure`、`P2ItemSmeltedProcedure`、`P2EntitySwitchHandProcedure`，以及五个 trigger mixin。
+  - 生成物包含四个 trigger procedure 和五个 trigger mixin。
 - **待真机确认**：
   - `bucket_filled` 的实际装填结果。
 
@@ -157,7 +157,7 @@
   - Tool：`stayInGridWhenCrafting` 时返回自身。
   - 现有 1.20.1 Fabric 无 `ItemStack` 级 remainder 钩子；`damageOnCrafting` 的耐久扣减本轮不实现，物品仍留在合成格。
 - **验证**：
-  - `p3workspace`：equipment procedure、带 `recipeRemainder` 的 item、带 `stayInGrid` 的 tool 生成成功。
+  - 测试工作区：equipment procedure、带 `recipeRemainder` 的 item、带 `stayInGrid` 的 tool 生成成功。
   - `javac`：18 源文件 / 0 错误 / 23 class。
   - 生成 `CraftingRemainders`、`CraftingRemainderMixin`，item 注册 `Items.BUCKET`，tool 注册自身。
 - **待真机确认**：
@@ -180,7 +180,7 @@
 - **1.20.1 属性映射**：
   - `ARMOR` → `minecraft:generic.armor`，`MAX_HEALTH` → `minecraft:generic.max_health` 等；特殊项 `SPAWN_REINFORCEMENTS_CHANCE` / `JUMP_STRENGTH` 单独映射。
 - **验证**：
-  - `p4workspace`：带 damage/knockback/armor/attributes/curse 的 enchantment 生成成功。
+  - 测试工作区：带 damage/knockback/armor/attributes/curse 的 enchantment 生成成功。
   - effect JSON 已生成，属性为 `minecraft:generic.armor`。
   - `javac`：15 源文件 / 0 错误 / 20 class。
 - **待真机确认**：
@@ -188,15 +188,14 @@
 
 ## 修复：工作区 Gradle wrapper 可移植性（2026.3-4.0.21.61-beta）
 
-- 根因：`workspacebase` 的 `gradle-wrapper.properties` 使用了本机绝对路径：
-  `file:///B:/QA/.../reference_resources/gradle-9.8.0-bin.zip`。
+- 根因：`workspacebase` 的 `gradle-wrapper.properties` 使用了本机绝对文件 URL。
   其他人创建/构建工作区时该文件不存在。
 - 修复：三套 workspacebase（Fabric、datapack、forge）统一改为：
   `https://services.gradle.org/distributions/gradle-9.8.0-bin.zip`
 - 验证：
   - 新生成工作区的 wrapper 只包含公共 URL；
-  - 新工作区顶层 build/config 文件扫描无 `B:`, `C:`, `reference_resources`, `_verify`, `jdk-25` 路径；
-  - P9 fixture `javac` 17 源文件 / 24 class。
+  - 新工作区顶层 build/config 文件扫描无本机绝对路径；
+  - 测试工作区 `javac` 17 源文件 / 24 class。
 
 ## 修复：工具挖掘等级（2026.3-4.0.20.59-beta）
 
@@ -207,7 +206,7 @@
   - IRON → 2
   - DIAMOND → 3
   - NETHERITE/其他 → 4
-- 验证：`UnbreakableTestTool`（NETHERITE）生成的 `getLevel()` 为 `4`；P8 fixture `javac` 17 源文件 / 24 class。
+- 验证：测试工具（NETHERITE）生成的 `getLevel()` 为 `4`；测试工作区 `javac` 17 源文件 / 24 class。
 
 ## P5：剩余 2026.3 功能（2026.3-4.0.19.57-beta）
 
@@ -231,7 +230,7 @@
 - **验证**：
   - multipart fixture 生成 `"multipart": [...]`，模型为 `_0`/`_1`；
   - loot modifier、WATER + FALLDAMAGE_RESETTING raytrace、strong power、unbreakable armor 全部生成；
-  - P7 `javac`：30 源文件 / 0 错误 / 46 class。
+  - 测试工作区 `javac`：30 源文件 / 0 错误 / 46 class。
 - **待真机确认**：
   - multipart 实际渲染与碰撞；
   - loot modifier 对目标掉落表的合并；
@@ -251,7 +250,7 @@
 - 验证：
   - 完整 effect JSON 通过解析；
   - `LivingEntityMixin`、`EnchantmentHelperMixin` 正常生成；
-  - P6 `javac`：16 源文件 / 0 错误 / 22 class。
+  - 测试工作区 `javac`：16 源文件 / 0 错误 / 22 class。
 - 待真机验证：护甲有效性、mob/block experience。
 
 ## P4 修复：附魔属性限定部位（2026.3-4.0.17.53-beta）
@@ -266,7 +265,7 @@
   - Weapon / Pickaxe → `MAINHAND`
   - Chest → `CHEST`
   - Foot → `FEET`
-- 验证：P5 fixture `javac` 17 源文件 / 0 错误 / 23 class。
+- 验证：测试工作区 `javac` 17 源文件 / 0 错误 / 23 class。
 
 ## P4 修复：附魔属性 JSON（2026.3-4.0.16.51-beta）
 
@@ -293,16 +292,16 @@
 - `canEnchant` 同时检查类别与标签，覆盖附魔台、铁砧和 `/enchant` 路径。
 - 验证：
   - 用户的三个 enchantment fixture 生成成功；
-  - `TestWeaponEnchant` 为 `WEAPON`，Chest 为 `ARMOR_CHEST`，Foot 为 `ARMOR_FEET`；
+  - 主手附魔为 `WEAPON`，胸甲附魔为 `ARMOR_CHEST`，靴子附魔为 `ARMOR_FEET`；
   - `javac`：17 源文件 / 0 错误 / 22 class。
 
 ## 已知问题 / 下一阶段
 
-- **旧工作区转换**：`test-workspace/b4e` 的 fluid 元素是旧 schema，2026.3 读取时报 `Field type of mod element DefaultFluid is null`。这不是生成器 YAML 问题，需要新建 2026.3 fluid fixture 或在后续阶段补 converter 兼容验证。
+- **旧工作区转换**：旧测试工作区的 fluid 元素是旧 schema，2026.3 读取时报 `Field type of mod element DefaultFluid is null`。这不是生成器 YAML 问题，需要新建 2026.3 fluid fixture 或在后续阶段补 converter 兼容验证。
 - **动画**：本轮明确不实现实体/物品动画；`animations` 与 synced data 条件后续按用户决定隐藏或排除。
 - **附魔引擎**：2026.3 的附魔效果 JSON 引擎已在 P4 实现；仍需真机验证伤害/击退/护甲/属性/经验/诅咒。
 - **其余触发器 / 2026.3 新功能**：按 P5 及后续批次推进，每批 `javac`/生成通过后停止等待真机验证。
-- 测试 harness 仍位于工作区 `_verify/`；P5 起逐步把必要的 smoke-test/verify 脚本迁入 `tools/`，重依赖继续使用 MCreator/Gradle 缓存。
+- 测试 harness 仍位于工作区测试目录；P5 起逐步把必要的 smoke-test/verify 脚本迁入 `tools/`，重依赖继续使用 MCreator/Gradle 缓存。
 
 ## 下一步（真机验证 / P5）
 
